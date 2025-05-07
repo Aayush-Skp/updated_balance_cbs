@@ -45,3 +45,9 @@ flutter:
     - assets/icons/Splash.png
     - assets/icons/group.png
     - assets/icons/
+    - assets/
+    - assets/logo/
+    - assets/common/
+    - assets/menu/
+    - assets/profile/
+    - assets/receipt/

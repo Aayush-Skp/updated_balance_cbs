@@ -39,8 +39,8 @@ class AuthApiProvider {
     required String actualBaseUrl,
   }) async {
     try {
-      final int? totalCount =
-          await getTotalCount(username, password, clientAlias, actualBaseUrl);
+      final int? totalCount = await getTotalCount(
+          username.trim(), password, clientAlias, actualBaseUrl);
 
       print("Total count received: $totalCount");
       if (totalCount == null) {

@@ -7,6 +7,7 @@ import 'package:balance_cbs/common/widget/custom_snackbar.dart';
 import 'package:balance_cbs/feature/auth/cubit/login_cubit.dart';
 import 'package:balance_cbs/views/dashboard.dart';
 import 'package:balance_cbs/feature/auth/ui/widgets/setting_page.dart';
+import 'package:balance_cbs/views/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -95,7 +96,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             SharedPref.setRememberMe(true);
           }
 
-          NavigationService.push(target: const DashboardWidget());
+          NavigationService.push(target:  Menu());
         } else if (state is CommonNoData) {
           showCustomSnackBar(
               context: context,
