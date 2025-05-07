@@ -6,11 +6,8 @@ import 'package:balance_cbs/common/utils/url_utils.dart';
 class AuthApiProvider {
   final ApiProvider apiProvider;
 
-  final String baseUrl;
-
   const AuthApiProvider({
     required this.apiProvider,
-    required this.baseUrl,
   });
 
   Future<dynamic> loginUser({
@@ -120,27 +117,5 @@ class AuthApiProvider {
     } catch (e) {
       print('Error in Pushing the Data : $e');
     }
-  }
-
-  Future<dynamic> setUserToken({
-    required String token,
-    // required String deviceId,
-    required String appVersion,
-    required String userToken,
-  }) async {
-    final url = "$baseUrl/api/setdevicetoken/";
-
-    final body = {
-      "fcmserver_identifier": "android",
-      "device_token": token,
-      "version": appVersion,
-    };
-
-    final url0 = UrlUtils.getUri(url: url, params: body);
-    return await apiProvider.post(
-      url0.toString(),
-      {},
-      token: userToken,
-    );
   }
 }

@@ -5,23 +5,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MultiRepositoryWrapper extends StatelessWidget {
   final Widget child;
-  final String env;
-  const MultiRepositoryWrapper(
-      {super.key, required this.child, required this.env});
+
+  const MultiRepositoryWrapper({super.key, required this.child});
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<ApiProvider>(
-          create: (context) => ApiProvider(
-            baseUrl: env,
-          ),
+          create: (context) => ApiProvider(),
           lazy: true,
         ),
         RepositoryProvider<UserRepository>(
           create: (context) => UserRepository(
             apiProvider: RepositoryProvider.of<ApiProvider>(context),
-            baseUrl: env,
           )..initialState(),
           lazy: true,
         ),
