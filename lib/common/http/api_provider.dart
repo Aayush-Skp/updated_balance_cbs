@@ -1,21 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:balance_cbs/common/http/dio_client.dart';
 import 'package:balance_cbs/common/http/custom_exception.dart';
 import 'package:balance_cbs/common/shared_pref.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http_parser/http_parser.dart' as parse;
-import 'package:mime/mime.dart';
 
 class ApiProvider {
-  final String baseUrl;
-
-  ApiProvider({
-    required this.baseUrl,
-  });
+  ApiProvider();
 
   Future<Map<String, dynamic>> post(
     String url,
@@ -25,7 +18,7 @@ class ApiProvider {
     Map<String, String> header = const {},
   }) async {
     dynamic responseJson;
-    final DioClient dioClient = DioClient(baseUrl: baseUrl);
+    final DioClient dioClient = DioClient(baseUrl: url);
 
     try {
       final Map<String, String> requestHeader = {
@@ -62,7 +55,7 @@ class ApiProvider {
     bool isRefreshRequest = false,
   }) async {
     final DioClient dioClient = DioClient(
-      baseUrl: baseUrl,
+      baseUrl: url,
     );
 
     dynamic responseJson;
@@ -96,7 +89,7 @@ class ApiProvider {
     bool isRefreshRequest = false,
   }) async {
     final DioClient dioClient = DioClient(
-      baseUrl: baseUrl,
+      baseUrl: url,
     );
 
     dynamic responseJson;
@@ -120,232 +113,6 @@ class ApiProvider {
       responseJson = await _handleErrorResponse(e);
     }
     return responseJson;
-  }
-
-  Future<dynamic> get(
-    Uri url, {
-    required int? userId,
-    String token = '',
-    bool isRefreshRequest = false,
-    int timeOut = 30,
-    Map<String, dynamic>? extraHeaders,
-  }) async {
-    final DioClient dioClient = DioClient(
-      baseUrl: baseUrl,
-    );
-
-    dynamic responseJson;
-
-    try {
-      final Map<String, String> header = {
-        'content-type': 'application/json',
-        'accept': 'application/json',
-        'origin': '*',
-        'Access-Control-Allow-Origin': '*',
-        ...extraHeaders ?? {},
-        // // ...await DeviceUtils.deviceInfoHeader,
-      };
-
-      if (token.isNotEmpty) {
-        header['Authorization'] = 'Bearer $token';
-      }
-      final dynamic response = await dioClient.get(
-        url,
-        options: Options(
-          headers: header,
-          // sendTimeout: timeOut * 1000,
-          // receiveTimeout: timeOut * 1000,
-          sendTimeout: Duration(seconds: timeOut),
-          receiveTimeout: Duration(seconds: timeOut),
-        ),
-      );
-
-      responseJson = _response(response, url.toString(), cacheResult: true);
-    } on DioException catch (e, s) {
-      responseJson = await _handleErrorResponse(e);
-      // Log.e(e);
-      // Log.d(s);
-    }
-    return responseJson;
-  }
-
-  Future<dynamic> delete(String url,
-      {required int? userId, String token = '', dynamic body}) async {
-    final DioClient dio = DioClient(
-      baseUrl: baseUrl,
-    );
-    dynamic responseJson;
-    try {
-      final Map<String, String> header = {
-        'content-type': 'application/json',
-        'accept': 'application/json',
-        'origin': '*',
-        'Access-Control-Allow-Origin': '*',
-        // // ...await DeviceUtils.deviceInfoHeader,
-      };
-      debugPrint('TOKEN $token');
-      if (token.isNotEmpty) {
-        header['Authorization'] = 'Bearer $token';
-      }
-      final dynamic response = await dio.delete(Uri.parse(url),
-          data: body, options: Options(headers: header));
-      responseJson = await _response(response, url);
-      responseJson['status'] = response.statusCode;
-    } on DioException catch (e) {
-      responseJson = await _handleErrorResponse(e);
-    }
-    return responseJson;
-  }
-
-  upload(String url, File file,
-      {required int? userId, String token = ''}) async {
-    final DioClient dio = DioClient(
-      baseUrl: baseUrl,
-    );
-    dynamic responseJson;
-    try {
-      final Map<String, String> header = {
-        'accept': 'application/json',
-        'origin': '*',
-        'Access-Control-Allow-Origin': '*',
-        // ...await DeviceUtils.deviceInfoHeader,
-      };
-      if (token.isNotEmpty) {
-        header['Authorization'] = 'Bearer $token';
-      }
-      final String fileName = file.path.split('/').last;
-      // final String _extention = file.path.split('.').last;
-      // ignore: unused_local_variable
-      final String type = lookupMimeType(file.path)!.split('/').first;
-
-      final FormData formData = FormData.fromMap(<String, dynamic>{
-        'image': await MultipartFile.fromFile(
-          file.path,
-          filename: fileName,
-          contentType: parse.MediaType('image', file.path.split('.').last),
-        ),
-      });
-      final Response<dynamic> response = await dio.post(
-        Uri.parse(url),
-        data: formData,
-        options: Options(headers: header),
-        onSendProgress: (count, total) {},
-      );
-
-      responseJson = _response(response, url);
-    } on DioException catch (e) {
-      responseJson = await _handleErrorResponse(e);
-      // Log.e(e);
-    }
-    return responseJson;
-  }
-
-  uploadToAWS(
-    String url,
-    File file,
-    String filename, {
-    required int? userId,
-    String token = '',
-    required Function(int, int) onSendProgress,
-  }) async {
-    final DioClient dio = DioClient(
-      baseUrl: baseUrl,
-    );
-    dynamic responseJson;
-    try {
-      // ignore: unused_local_variable
-      final Map<String, String> header = {
-        'accept': 'application/json',
-        'origin': '*',
-        "content-type": "video/quicktime",
-        'content-length': (await file.length()).toString(),
-      };
-
-      final String type = lookupMimeType(file.path)!.split('/').first;
-      print(type);
-
-      // ignore: unused_local_variable
-      final FormData formData = FormData.fromMap(<String, dynamic>{
-        'file': await MultipartFile.fromFile(
-          file.path,
-          filename: filename,
-          contentType: parse.MediaType('video', file.path.split('.').last),
-        ),
-      });
-
-      final Response<dynamic> response = await dio.put(
-        Uri.parse(url),
-        data: file.openRead(),
-        options: Options(headers: {
-          Headers.contentLengthHeader: await file.length(),
-          Headers.contentTypeHeader:
-              parse.MediaType('video', file.path.split('.').last).toString(),
-        }),
-        onSendProgress: (count, total) {
-          print(count / total);
-          onSendProgress(count, total);
-        },
-      );
-
-      responseJson = _response(response, url);
-    } on DioException catch (e) {
-      responseJson = await _handleErrorResponse(e);
-      // Log.e(e);
-    }
-    return responseJson;
-  }
-
-  Future<File?> download(String url, String localPath,
-      {required int userId, required String token}) async {
-    final DioClient dio = DioClient(
-      baseUrl: baseUrl,
-    );
-    try {
-      final Map<String, String> header = {
-        'accept': 'application/json',
-        'origin': '*',
-        // ...await DeviceUtils.deviceInfoHeader,
-      };
-
-      if (token.isNotEmpty) {
-        header['Authorization'] = 'Bearer $token';
-      }
-
-      final Response<dynamic> response = await dio.get(
-        Uri.parse(url),
-        options: Options(
-          responseType: ResponseType.bytes,
-          followRedirects: false,
-          headers: header,
-          validateStatus: (status) {
-            if (status == null) {
-              return false;
-            }
-            return status < 500;
-          },
-        ),
-      );
-      if (response.statusCode != null) {
-        if (response.statusCode! >= 200 && response.statusCode! < 300) {
-          final File file = File(localPath);
-          final raf = file.openSync(mode: FileMode.write);
-          raf.writeFromSync(response.data);
-          await raf.close();
-          return file;
-        } else {
-          return null;
-        }
-      } else {
-        return null;
-      }
-    } on DioException catch (e) {
-      // Log.e(e);
-
-      return null;
-    } catch (e) {
-      // Log.e("Error in downlodng");
-      return null;
-    }
   }
 
   _handleErrorResponse(DioException e) async {

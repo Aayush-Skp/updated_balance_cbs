@@ -5,11 +5,6 @@ import 'package:balance_cbs/common/wrapper/multi_repo_wrapper.dart';
 import 'package:balance_cbs/feature/auth/ui/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
-// void main() async {
-//   runApp(DevicePreview(
-//       //  enabled: !kReleaseMode,
-//       builder: (context) => const MyApp()));
-// }
 void main() async {
   runApp(const MyApp());
 }
@@ -19,9 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryWrapper(
-      env: "https://internal.balancecbs.com/api/collector",
       child: MultiBlocWrapper(
-        env: "https://internal.balancecbs.com/api/collector",
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: NavigationService.navigationKey,
@@ -56,17 +49,6 @@ class _MySplashState extends State<MySplash> {
     }
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: Image.asset(
-  //       'assets/icons/Splash.png',
-  //       fit: BoxFit.cover,
-  //       width: double.infinity,
-  //       height: double.infinity,
-  //     ),
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

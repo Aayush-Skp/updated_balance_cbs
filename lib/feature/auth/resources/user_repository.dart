@@ -17,17 +17,13 @@ class UserRepository {
   late AuthApiProvider authApiProvider;
 
   String _token = '';
-  final String baseUrl;
+
   final ValueNotifier<User?> _user = ValueNotifier(null);
 
   UserRepository({
     required this.apiProvider,
-    required this.baseUrl,
   }) {
-    authApiProvider = AuthApiProvider(
-      apiProvider: apiProvider,
-      baseUrl: baseUrl,
-    );
+    authApiProvider = AuthApiProvider(apiProvider: apiProvider);
 
     print(authApiProvider);
   }

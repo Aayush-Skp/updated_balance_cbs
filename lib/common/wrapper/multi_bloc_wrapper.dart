@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MultiBlocWrapper extends StatelessWidget {
   final Widget child;
-  final String env;
-  const MultiBlocWrapper({super.key, required this.child, required this.env});
+
+  const MultiBlocWrapper({super.key, required this.child});
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
