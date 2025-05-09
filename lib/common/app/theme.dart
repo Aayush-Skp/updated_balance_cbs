@@ -13,8 +13,8 @@ class CustomTheme {
   }
 
 /* Infor Brain Solution Data */
-  static const Color appThemeColorPrimary = Colors.green;
-  static const Color appThemeColorSecondary = Color(0xFF1DB207);
+  static const Color appThemeColorPrimary = Color(0xFFc2ddff);
+  static const Color appThemeColorSecondary = Color(0xFF23538D);
   static const Color tableColorPrimary = Color(0xFFD5EBEB);
   static const Color tableColorSecondary = Color(0xFFFAFCFF);
   static const Color tableColorHead = Color(0xFFD7ECED);

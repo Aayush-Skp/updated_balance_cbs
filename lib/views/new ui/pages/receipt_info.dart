@@ -1,8 +1,8 @@
-import 'package:finacct/common/commonforall.dart';
-import 'package:finacct/common/searchwidget.dart';
-import 'package:finacct/common/style/boldtext.dart';
-import 'package:finacct/form/leftside.dart';
-import 'package:finacct/form/rightside.dart';
+import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
+import 'package:balance_cbs/views/new%20ui/common/searchwidget.dart';
+import 'package:balance_cbs/views/new%20ui/common/style/boldtext.dart';
+import 'package:balance_cbs/views/new%20ui/form/leftside.dart';
+import 'package:balance_cbs/views/new%20ui/form/rightside.dart';
 import 'package:flutter/material.dart';
 
 class ReceiptInfo extends StatefulWidget {
@@ -21,7 +21,6 @@ class _ReceiptInfoState extends State<ReceiptInfo> {
         child: Column(
           children: [
             Commonforall(),
-            SearchWidget(),
             Container(
               margin: EdgeInsets.only(top: 20),
               padding: EdgeInsets.only(
@@ -78,8 +77,8 @@ class _ReceiptInfoState extends State<ReceiptInfo> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(child: LeftColumn()),
-                      Expanded(child: RightColumn()),
+                      // Expanded(child: LeftColumn()),
+                      // Expanded(child: RightColumn()),
                     ],
                   ),
                   if (ismore) ...[
@@ -90,8 +89,8 @@ class _ReceiptInfoState extends State<ReceiptInfo> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(child: LeftColumn()),
-                        Expanded(child: RightColumn()),
+                        // Expanded(child: LeftColumn()),
+                        // Expanded(child: RightColumn()),
                       ],
                     ),
                   ],
@@ -224,20 +223,19 @@ class _ReceiptInfoState extends State<ReceiptInfo> {
                                         style: ButtonStyle(
                                           backgroundColor:
                                               WidgetStateProperty.all(
-                                                Color(0xffAE0003),
-                                              ),
+                                            Color(0xffAE0003),
+                                          ),
                                           foregroundColor:
                                               WidgetStateProperty.all(
-                                                Colors.white,
-                                              ),
+                                            Colors.white,
+                                          ),
                                         ),
-                                        onPressed:
-                                            () => Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => ReceiptInfo(),
-                                              ),
-                                            ),
+                                        onPressed: () =>
+                                            Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => ReceiptInfo(),
+                                          ),
+                                        ),
                                         child: Text("Cancel"),
                                       ),
                                       SizedBox(width: 10),
@@ -245,19 +243,19 @@ class _ReceiptInfoState extends State<ReceiptInfo> {
                                         style: ButtonStyle(
                                           backgroundColor:
                                               WidgetStateProperty.all(
-                                                Color(0xffC2DDFF),
-                                              ),
+                                            Color(0xffC2DDFF),
+                                          ),
                                           foregroundColor:
                                               WidgetStateProperty.all(
-                                                Colors.black,
-                                              ),
+                                            Colors.black,
+                                          ),
                                         ),
                                         child: Text("Confirm"),
                                         onPressed: () {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
-                                              builder:
-                                                  (context) => ReceiptInfo(),
+                                              builder: (context) =>
+                                                  ReceiptInfo(),
                                             ),
                                           );
                                         },

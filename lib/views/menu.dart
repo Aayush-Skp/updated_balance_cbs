@@ -1,11 +1,7 @@
-// import 'package:finacct/common/bottom.dart';
-// import 'package:finacct/common/commonforall.dart';
-// import 'package:finacct/pages/profile.dart';
-// import 'package:finacct/pages/push.dart';
-// import 'package:finacct/pages/receipt.dart';
-// import 'package:finacct/pages/receipt_report.dart';
 import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
 import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
+import 'package:balance_cbs/views/new%20ui/pages/receipt_info.dart';
+import 'package:balance_cbs/views/new%20ui/pages/receipt_report.dart';
 import 'package:balance_cbs/views/pages/Data%20pull/pull_data_screen.dart';
 import 'package:balance_cbs/views/pages/data_push/PushDataScreen.dart';
 import 'package:balance_cbs/views/pages/payment_page/payment_page_widget.dart';
@@ -24,18 +20,19 @@ class Menu extends StatelessWidget {
   ];
 
   final List<Widget> paths = [
-    ReceiptScreen(),
-    PaymentPageWidget(),
-    ReceiptReportPage(),
-    PaymentPageWidget(),
-    PushDataScreen(),
-    PullData()
     // Receipt(),
     // Container(),
     // ReceiptReport(),
     // Container(),
     // PushData(),
-    // Profile(),
+    ReceiptScreen(),
+    PaymentPageWidget(),
+    ReceiptReportPage(),
+    // ReceiptInfo(),
+    // ReceiptReport(),
+    PaymentPageWidget(),
+    PushDataScreen(),
+    PullData(),
   ];
   Menu({super.key});
 

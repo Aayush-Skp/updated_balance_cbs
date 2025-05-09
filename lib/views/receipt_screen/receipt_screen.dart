@@ -2,9 +2,11 @@ import 'package:balance_cbs/common/app/theme.dart';
 import 'package:balance_cbs/common/widget/common_page.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
 import 'package:balance_cbs/feature/qr_scan/qr_scan_widget.dart';
+import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:balance_cbs/views/pages/Input_data_table/input_data_table.dart';
 import 'package:balance_cbs/views/pages/Input_data_table/input_table_by_group.dart';
 import 'package:balance_cbs/views/receipt_screen/account_table_widget.dart';
+import 'package:balance_cbs/views/receipt_screen/build_customer_info.dart';
 import 'package:balance_cbs/views/receipt_screen/search_service.dart';
 import 'package:balance_cbs/views/receipt_screen/search_widget.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
   Map<String, List<Map<String, dynamic>>> _groupedAccounts = {};
   Map<String, List<Map<String, dynamic>>> _filteredAccounts = {};
   bool _isLoading = true;
+
+  bool isHidden = true;
+  // double amt = 100;
 
   @override
   void initState() {
@@ -115,47 +120,45 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomCommonPage(
-      resizeToAvoidBottomInset: false,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 10.0,
-          right: 15.0,
-          left: 15.0,
-          bottom: 0,
-        ),
-        child: Column(
-          children: [
-            SearchBarWidget(
-              searchController: _searchController,
-              showSearchBy: _isShowSearchBy,
-              selectedIndex: _selectedIndex,
-              onFilterPressed: () {
-                setState(() {
-                  _isShowSearchBy = !_isShowSearchBy;
-                });
-              },
-              onTogglePressed: ((index) {
-                setState(() {
-                  _selectedIndex = index;
-                  _selectedIndex == 0
-                      ? _loadAccounts()
-                      : _loadAccountsByGroup();
-                });
-              }),
-              onQRPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const QRScanWidget(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 5),
-            Expanded(child: _buildTable()),
-          ],
-        ),
+    return Scaffold(
+      body: Column(
+        children: [
+          Commonforall(),
+          SearchBarWidget(
+            searchController: _searchController,
+            showSearchBy: _isShowSearchBy,
+            selectedIndex: _selectedIndex,
+            // onFilterPressed: () {
+            //   setState(() {
+            //     _isShowSearchBy = !_isShowSearchBy;
+            //   });
+            // },
+            // onTogglePressed: ((index) {
+            //   setState(() {
+            //     _selectedIndex = index;
+            //     _selectedIndex == 0
+            //         ? _loadAccounts()
+            //         : _loadAccountsByGroup();
+            //   });
+            // }),
+            onQRPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const QRScanWidget(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 5),
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: _buildTable(),
+          )),
+        ],
+        // ),
+        // ),
       ),
     );
   }
@@ -171,9 +174,13 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
         final name = _filteredAccounts.keys.elementAt(index);
         final accounts = _filteredAccounts[name]!;
 
+        // final totalAmount = accounts.fold<double>(
+        //   0,
+        //   (sum, acc) => sum + (acc['input_amount'] ?? 0 as num).toDouble(),
+        // );
         final totalAmount = accounts.fold<double>(
           0,
-          (sum, acc) => sum + (acc['input_amount'] ?? 0 as num).toDouble(),
+          (sum, acc) => sum + ((acc['input_amount'] ?? 0) as num).toDouble(),
         );
         final dueAmount = accounts.fold<double>(
           0,
@@ -185,43 +192,52 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) {
-                return (_selectedIndex == 1)
-                    ? GroupByGroupName(
-                        groudName: name,
-                      )
-                    : InputDataTable(
-                        account: accounts,
-                      );
+                return
+                    // (_selectedIndex == 1)
+                    //     ? GroupByGroupName(
+                    //         groudName: name,
+                    //       )
+                    //     :
+                    InputDataTable(
+                  account: accounts,
+                );
               }),
             ).then((_) {
               setState(() {
-                if (_selectedIndex == 0) {
-                  _loadAccounts();
-                } else {
-                  _loadAccountsByGroup();
-                }
+                // if (_selectedIndex == 0) {
+                _loadAccounts();
+                // } else {
+                // _loadAccountsByGroup();
+                // }
               });
             });
           },
           child: Padding(
-            padding: (_selectedIndex == 1)
-                ? const EdgeInsets.symmetric(vertical: 3, horizontal: 5)
-                : const EdgeInsets.all(8.0),
+            padding:
+                // (_selectedIndex == 1)
+                //     ? const EdgeInsets.symmetric(vertical: 3, horizontal: 5)
+                //     :
+                const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                (_selectedIndex == 1)
-                    ? _buildGroupNameList(name, accounts)
-                    : _buildCustomerInfo(name, accounts),
+                // (_selectedIndex == 1)
+                //     ? _buildGroupNameList(name, accounts)
+                //     :
+                // _buildCustomerInfo(name, accounts),
+
+                CustomerInfoCard(
+                    name: name, accounts: accounts, amt: totalAmount),
                 // const SizedBox(height: 10),
-                (_selectedIndex == 1)
-                    ? Container()
-                    : AccountTableWidget(
-                        accounts: accounts,
-                        dueAmount: dueAmount,
-                        totalAmount: totalAmount,
-                        horizontalController: _horizontalController,
-                      )
+                // (_selectedIndex == 1)
+                //     ? Container()
+                //     :
+                AccountTableWidget(
+                  accounts: accounts,
+                  dueAmount: dueAmount,
+                  totalAmount: totalAmount,
+                  horizontalController: _horizontalController,
+                )
               ],
             ),
           ),
@@ -230,58 +246,58 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     );
   }
 
-  Widget _buildGroupNameList(String name, List<Map<String, dynamic>> accounts) {
-    return Container(
-      decoration: BoxDecoration(
-          color: CustomTheme.tableColorSecondary,
-          borderRadius: BorderRadius.circular(5),
-          border: const Border.symmetric(
-              vertical: BorderSide.none,
-              horizontal:
-                  BorderSide(color: CustomTheme.tableColorPrimary, width: 2))),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          "Group Name: $name",
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-      ),
-    );
-  }
+  // Widget _buildGroupNameList(String name, List<Map<String, dynamic>> accounts) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //         color: CustomTheme.tableColorSecondary,
+  //         borderRadius: BorderRadius.circular(5),
+  //         border: const Border.symmetric(
+  //             vertical: BorderSide.none,
+  //             horizontal:
+  //                 BorderSide(color: CustomTheme.tableColorPrimary, width: 2))),
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: Text(
+  //         "Group Name: $name",
+  //         style: const TextStyle(fontWeight: FontWeight.w600),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildCustomerInfo(String name, List<Map<String, dynamic>> accounts) {
-    final uniqueNames = accounts.map((e) => e['ac_name']).toSet().toList();
-    final joinedNames = uniqueNames.join(', ');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Name: $joinedNames",
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "Address: ${accounts.first['p_address'] ?? 'N/A'}",
-        ),
-        Text(
-          "Group Name: ${accounts.first['center_name'] ?? 'N/A'}",
-        ),
-        (accounts.first['contact'] != '/' && accounts.first['contact'] != null)
-            ? Row(
-                children: [
-                  Text(
-                    "Contact: ${accounts.first['contact'] ?? 'N/A'}",
-                  ),
-                  const Icon(
-                    Icons.call_outlined,
-                    color: CustomTheme.appThemeColorPrimary,
-                  ),
-                ],
-              )
-            : Container(),
-        Text(
-          "Id Number: ${accounts.first['id_no'] ?? 'N/A'}",
-        ),
-      ],
-    );
-  }
+  // Widget _buildCustomerInfo(String name, List<Map<String, dynamic>> accounts) {
+  //   final uniqueNames = accounts.map((e) => e['ac_name']).toSet().toList();
+  //   final joinedNames = uniqueNames.join(', ');
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         "Names: $joinedNames",
+  //         style: const TextStyle(fontWeight: FontWeight.bold),
+  //       ),
+  //       Text(
+  //         "Address: ${accounts.first['p_address'] ?? 'N/A'}",
+  //       ),
+  //       Text(
+  //         "Group Name: ${accounts.first['center_name'] ?? 'N/A'}",
+  //       ),
+  //       (accounts.first['contact'] != '/' && accounts.first['contact'] != null)
+  //           ? Row(
+  //               children: [
+  //                 Text(
+  //                   "Contact: ${accounts.first['contact'] ?? 'N/A'}",
+  //                 ),
+  //                 const Icon(
+  //                   Icons.call_outlined,
+  //                   color: CustomTheme.appThemeColorPrimary,
+  //                 ),
+  //               ],
+  //             )
+  //           : Container(),
+  //       Text(
+  //         "Id Number: ${accounts.first['id_no'] ?? 'N/A'}",
+  //       ),
+  //     ],
+  //   );
+  // }
 }

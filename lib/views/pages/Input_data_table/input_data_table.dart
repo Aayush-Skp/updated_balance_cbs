@@ -1,4 +1,5 @@
 import 'package:balance_cbs/common/widget/common_page.dart';
+import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:balance_cbs/views/pages/Input_data_table/individual_user_input_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -8,8 +9,18 @@ class InputDataTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomCommonPage(
-        child: SingleChildScrollView(
-            child: IndividualUserInput(account: account)));
+    // return CustomCommonPage(
+    //     child: SingleChildScrollView(
+    //         child: IndividualUserInput(account: account)));
+    return Scaffold(
+      body: Column(
+        children: [
+          Commonforall(),
+          Expanded(
+              child: SingleChildScrollView(
+                  child: IndividualUserInput(account: account)))
+        ],
+      ),
+    );
   }
 }

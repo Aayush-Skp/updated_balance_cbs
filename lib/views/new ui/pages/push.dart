@@ -1,6 +1,7 @@
-import 'package:finacct/common/bottom.dart';
-import 'package:finacct/common/commonforall.dart';
-import 'package:finacct/pages/menu.dart';
+
+import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
+import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
+import 'package:balance_cbs/views/menu.dart';
 import 'package:flutter/material.dart';
 import 'profile.dart';
 

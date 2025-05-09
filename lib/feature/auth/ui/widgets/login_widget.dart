@@ -6,8 +6,9 @@ import 'package:balance_cbs/common/shared_pref.dart';
 import 'package:balance_cbs/common/widget/custom_snackbar.dart';
 import 'package:balance_cbs/feature/auth/cubit/login_cubit.dart';
 import 'package:balance_cbs/views/dashboard.dart';
-import 'package:balance_cbs/feature/auth/ui/widgets/setting_page.dart';
 import 'package:balance_cbs/views/menu.dart';
+import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
+import 'package:balance_cbs/views/new%20ui/pages/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,10 +25,8 @@ class _LoginWidgetState extends State<LoginWidget> {
   bool _isLoading = false;
   bool _obscurePassword = true;
   TextEditingController staffIdController = TextEditingController(text: "");
-  TextEditingController clientAliasController = TextEditingController(text: "");
-  TextEditingController urlController = TextEditingController(
-    text: "",
-  );
+  TextEditingController clientAliasController = TextEditingController();
+  TextEditingController urlController = TextEditingController();
   TextEditingController passwordController = TextEditingController(text: "");
 
   final _formKey = GlobalKey<FormState>();
@@ -35,7 +34,17 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   void initState() {
     super.initState();
+    _loadSettingData();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+
+  void _loadSettingData() async {
+    String alias = await SharedPref.getAlias();
+    String url = await SharedPref.getUrl();
+    setState(() {
+      clientAliasController.text = alias;
+      urlController.text = url;
+    });
   }
 
   @override
@@ -91,12 +100,12 @@ class _LoginWidgetState extends State<LoginWidget> {
           if (_rememberMe) {
             SharedPref.setUsername(staffIdController.text);
             SharedPref.setPassword(passwordController.text);
-            SharedPref.setAlias(clientAliasController.text);
-            SharedPref.setUrl(urlController.text);
+            // SharedPref.setAlias(clientAliasController.text);
+            // SharedPref.setUrl(urlController.text);
             SharedPref.setRememberMe(true);
           }
 
-          NavigationService.push(target:  Menu());
+          NavigationService.push(target: Menu());
         } else if (state is CommonNoData) {
           showCustomSnackBar(
               context: context,
@@ -113,173 +122,150 @@ class _LoginWidgetState extends State<LoginWidget> {
         body: Container(
           height: size.height,
           width: size.width,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                CustomTheme.appThemeColorSecondary,
-                CustomTheme.appThemeColorSecondary.withOpacity(0.8),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Image.asset(
+                      'assets/halfcircle.png',
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                    Positioned(
+                      top: 60,
+                      child:
+                          Image.asset('assets/common/finact.png', width: 150),
+                    ),
+                  ],
+                ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: Color(0xffC2DDFF),
+                      ),
+                      margin: EdgeInsets.only(top: 70, left: 20, right: 20),
+                      padding: EdgeInsets.only(bottom: 40),
+                      width: double.infinity,
+                      // height: 500,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 70.0,
+                          left: 10,
+                          right: 10,
+                        ),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 16),
+                              _buildInputField(
+                                controller: staffIdController,
+                                hintText: 'Staff Id',
+                                onSuffixIconTap: () async {
+                                  final result = await SharedPref.getUsername();
+                                  setState(() {
+                                    staffIdController =
+                                        TextEditingController(text: result);
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter staff ID';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              // TextField(
+                              //   controller: staffIdController,
+                              //   decoration: InputDecoration(
+                              //     filled: true,
+                              //     fillColor: Colors.white,
+                              //     enabledBorder: OutlineInputBorder(
+                              //       borderRadius: BorderRadius.circular(10),
+                              //       borderSide: BorderSide(
+                              //         color: Colors.blue.shade800,
+                              //         width: 2,
+                              //       ),
+                              //     ),
+                              //     focusedBorder: OutlineInputBorder(
+                              //       borderRadius: BorderRadius.circular(10),
+                              //       borderSide: BorderSide(
+                              //         color: Colors.blue.shade800,
+                              //         width: 2,
+                              //       ),
+                              //     ),
+                              //     hintText: "Staff Id",
+                              //   ),
+                              // ),
+                              SizedBox(height: 20),
+                              _buildPasswordField(),
+                              SizedBox(height: 20),
+                              _buildRememberMe(),
+
+                              SizedBox(height: 10),
+                              _buildLoginButton(),
+                              SizedBox(height: 10),
+                              // Center(
+                              //   child: InkWell(
+                              //     child: Text(
+                              //       "Forgot Password?",
+                              //       style: TextStyle(
+                              //         color: Color(0xff23538D),
+                              //         fontSize: 15,
+                              //         fontWeight: FontWeight.bold,
+                              //       ),
+                              //     ),
+                              //     onTap: () {},
+                              //   ),
+                              // ),
+                              SizedBox(height: 20),
+                              Center(
+                                child: Icon(
+                                  Icons.manage_accounts,
+                                  size: 55,
+                                  color: Color(0xff23538D),
+                                ),
+                              ),
+                              Center(
+                                child: InkWell(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Register(),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Settings",
+                                    style: TextStyle(
+                                      color: Color(0xff23538D),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 20,
+                      child: Image.asset('assets/man.png', width: 120),
+                      // size: 40,
+                      // color: Color(0xff23538D),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+                BottomBar(),
               ],
             ),
-          ),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: size.height),
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildHeader(),
-                        _buildLoginForm(),
-                        _buildFooter(),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      margin: const EdgeInsets.only(top: 30, bottom: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset(
-            CustomTheme.mainLogoWhite,
-            width: 170,
-            fit: BoxFit.contain,
-          ),
-          InkWell(
-            onTap: () {
-              NavigationService.push(target: const MySettingScreen());
-            },
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Image.asset(
-                'assets/icons/setting.png',
-                width: 32,
-                height: 32,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoginForm() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE6F1FF),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Welcome Back',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2B2D42),
-                ),
-              ),
-              const Text(
-                'Sign in to continue',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF8D99AE),
-                ),
-              ),
-              const SizedBox(height: 24),
-              _buildInputField(
-                controller: urlController,
-                hintText: "API URL",
-                onSuffixIconTap: () async {
-                  final result = await SharedPref.getUrl();
-                  setState(() {
-                    urlController = TextEditingController(text: result);
-                  });
-                },
-                prefixIcon: Icons.link,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the API URL';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildInputField(
-                controller: clientAliasController,
-                hintText: "Client Alias",
-                onSuffixIconTap: () async {
-                  final result = await SharedPref.getAlias();
-                  setState(() {
-                    clientAliasController = TextEditingController(text: result);
-                  });
-                },
-                prefixIcon: Icons.business,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter client alias';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildInputField(
-                controller: staffIdController,
-                hintText: "Staff ID",
-                prefixIcon: Icons.person,
-                onSuffixIconTap: () async {
-                  final result = await SharedPref.getUsername();
-                  setState(() {
-                    staffIdController = TextEditingController(text: result);
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter staff ID';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildPasswordField(),
-              const SizedBox(height: 8),
-              _buildRememberMe(),
-              const SizedBox(height: 24),
-              _buildLoginButton(),
-            ],
           ),
         ),
       ),
@@ -289,7 +275,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   Widget _buildInputField({
     required TextEditingController controller,
     required String hintText,
-    required IconData prefixIcon,
+    // required IconData prefixIcon,
     VoidCallback? onSuffixIconTap,
     String? Function(String?)? validator,
   }) {
@@ -309,35 +295,27 @@ class _LoginWidgetState extends State<LoginWidget> {
           controller: controller,
           validator: validator,
           decoration: InputDecoration(
-            hintText: 'Enter $hintText',
-            hintStyle: const TextStyle(color: Color(0xFF8D99AE)),
-            prefixIcon:
-                Icon(prefixIcon, color: CustomTheme.appThemeColorPrimary),
+            filled: true,
+            fillColor: Colors.white,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.blue.shade800,
+                width: 2,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.blue.shade800,
+                width: 2,
+              ),
+            ),
+            hintText: "Enter $hintText",
             suffixIcon: IconButton(
               icon: const Icon(Icons.upload_file, color: Color(0xFF8D99AE)),
               onPressed: onSuffixIconTap,
             ),
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFDEE2E6), width: 1),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: CustomTheme.appThemeColorPrimary, width: 1.5),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red, width: 1),
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           ),
         ),
       ],
@@ -368,13 +346,10 @@ class _LoginWidgetState extends State<LoginWidget> {
           },
           decoration: InputDecoration(
             hintText: 'Enter your password',
-            hintStyle: const TextStyle(color: Color(0xFF8D99AE)),
-            prefixIcon:
-                const Icon(Icons.lock, color: CustomTheme.appThemeColorPrimary),
             suffixIcon: IconButton(
               icon: Icon(
                 _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                color: const Color(0xFF8D99AE),
+                color: const Color(0xff23538D),
               ),
               onPressed: () {
                 setState(() {
@@ -384,25 +359,20 @@ class _LoginWidgetState extends State<LoginWidget> {
             ),
             filled: true,
             fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFDEE2E6), width: 1),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.blue.shade800,
+                width: 2,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: CustomTheme.appThemeColorPrimary, width: 1.5),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.blue.shade800,
+                width: 2,
+              ),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red, width: 1),
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           ),
         ),
       ],
@@ -417,7 +387,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           height: 24,
           child: Checkbox(
             value: _rememberMe,
-            activeColor: CustomTheme.appThemeColorPrimary,
+            // activeColor: CustomTheme.appThemeColorPrimary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ),
@@ -451,13 +421,10 @@ class _LoginWidgetState extends State<LoginWidget> {
     return SizedBox(
       width: double.infinity,
       height: 50,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: CustomTheme.appThemeColorPrimary,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: CustomTheme.appThemeColorSecondary,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
           elevation: 0,
         ),
         onPressed: _isLoading
@@ -487,19 +454,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-      ),
-    );
-  }
-
-  Widget _buildFooter() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      child: const Text(
-        CustomTheme.footerText,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 14,
-        ),
       ),
     );
   }

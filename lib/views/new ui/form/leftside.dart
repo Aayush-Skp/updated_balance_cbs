@@ -1,8 +1,10 @@
-import 'package:finacct/common/style/boldtext.dart';
+import 'package:balance_cbs/views/new%20ui/common/style/boldtext.dart';
 import 'package:flutter/material.dart';
 
 class LeftColumn extends StatefulWidget {
-  const LeftColumn({super.key});
+  final Map<String, dynamic> account;
+
+  const LeftColumn({required this.account, super.key});
 
   @override
   State<LeftColumn> createState() => _LeftColumnState();
@@ -11,12 +13,18 @@ class LeftColumn extends StatefulWidget {
 class _LeftColumnState extends State<LeftColumn> {
   @override
   Widget build(BuildContext context) {
+    final acc = widget.account;
     return Column(
       spacing: 15,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text("AC TYPES", style: TextStyle(fontWeight: FontWeight.bold)),
-        Text("Alchik Bachat Khata"),
+        // Text("Alchik Bachat Khata"),
+        Text(acc['account_type_name'].toString()),
+        // acc['account_type_name'].toString().length < 22
+        //     ? SizedBox(height: 6)
+        //     : SizedBox.shrink(),
+
         Text(
           "INPUT AMOUNT(NRS)",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -45,17 +53,27 @@ class _LeftColumnState extends State<LeftColumn> {
         ),
         // SizedBox(height: 1),
         BoldText('ACCOUNT OPEN DATE'),
-        Text('2079-01-01'),
+        Text(acc['ac_open_date'].toString()),
         BoldText('BALANCE'),
-        Text('100000'),
+        Text(
+          acc['balance'].toString(),
+        ),
         BoldText('BALANCE DATE'),
-        Text('2079-01-01'),
+        Text(
+          acc['bal_date']?.split(' ')[0] ?? '',
+        ),
         BoldText('INST AMOUNT(NRS)'),
-        Text('50'),
+        Text(
+          acc['inst_amt'].toString(),
+        ),
         BoldText('DUE AMOUNT(NRS)'),
-        Text('500'),
+        Text(
+          acc['due_amt'].toString(),
+        ),
         BoldText('PB CHECK DATE'),
-        Text('2080-01-01'),
+        Text(
+          acc['pb_check_date']?.split(' ')[0] ?? '',
+        ),
       ],
     );
   }

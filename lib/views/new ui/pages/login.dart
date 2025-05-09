@@ -1,6 +1,7 @@
-import 'package:finacct/common/bottom.dart';
-import 'package:finacct/pages/menu.dart';
-import 'package:finacct/pages/register.dart';
+
+import 'package:balance_cbs/views/menu.dart';
+import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
+import 'package:balance_cbs/views/new%20ui/pages/register.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -81,28 +82,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         SizedBox(height: 20),
 
-                        // TextField(
-                        //   controller: password,
-                        //   decoration: InputDecoration(
-                        //     enabledBorder: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //       borderSide: BorderSide(
-                        //         color: Colors.blue.shade800,
-                        //         width: 2,
-                        //       ),
-                        //     ),
-                        //     focusedBorder: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //       borderSide: BorderSide(
-                        //         color: Colors.blue.shade800,
-                        //         width: 2,
-                        //       ),
-                        //     ),
-                        //     filled: true,
-                        //     fillColor: Colors.white,
-                        //     hintText: "Password",
-                        //   ),
-                        // ),
                         StatefulBuilder(
                           builder: (context, setState) {
                             return TextField(

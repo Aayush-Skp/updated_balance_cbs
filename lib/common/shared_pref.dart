@@ -162,9 +162,19 @@ class SharedPref {
     return instance.getString(alias_key) ?? '';
   }
 
+  static Future removeAlias() async {
+    final instance = await SharedPreferences.getInstance();
+    await instance.remove(alias_key);
+  }
+
   static Future setUrl(String url) async {
     final instance = await SharedPreferences.getInstance();
     await instance.setString(url_key, url);
+  }
+
+  static Future removeUrl() async {
+    final instance = await SharedPreferences.getInstance();
+    await instance.remove(url_key);
   }
 
   static Future getRememberNumber() async {

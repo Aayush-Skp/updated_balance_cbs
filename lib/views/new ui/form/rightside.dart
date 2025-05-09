@@ -1,8 +1,9 @@
-import 'package:finacct/common/style/boldtext.dart';
+import 'package:balance_cbs/views/new%20ui/common/style/boldtext.dart';
 import 'package:flutter/material.dart';
 
 class RightColumn extends StatefulWidget {
-  const RightColumn({super.key});
+  final Map<String, dynamic> account;
+  const RightColumn({required this.account, super.key});
 
   @override
   State<RightColumn> createState() => _RightColumnState();
@@ -11,12 +12,17 @@ class RightColumn extends StatefulWidget {
 class _RightColumnState extends State<RightColumn> {
   @override
   Widget build(BuildContext context) {
+    final acc = widget.account;
+
     return Column(
       spacing: 15,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         BoldText('ACCOUNT'),
-        Text("28"),
+        // Text("28"),
+        Text(acc['ac_no']),
+        if (acc['account_type_name'].toString().length > 22)
+          SizedBox(height: 6),
         BoldText('Total'),
         Text("1000"),
         // SizedBox(height: 1),
@@ -24,7 +30,9 @@ class _RightColumnState extends State<RightColumn> {
           padding: const EdgeInsets.only(top: 15.0),
           child: BoldText('MATURITY DATE'),
         ),
-        Text('2080-01-01'),
+        Text(
+          acc['maturity_date'] ?? '',
+        ),
         BoldText('TOTAL'),
         Text('1000'),
         Text(''),

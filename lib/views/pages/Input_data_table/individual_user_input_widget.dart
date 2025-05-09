@@ -3,6 +3,9 @@ import 'package:balance_cbs/common/widget/customtabletextstyle.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
 import 'package:balance_cbs/feature/geoLocation/get_current_location.dart';
 import 'package:balance_cbs/feature/pos_print/printer_util.dart';
+import 'package:balance_cbs/views/new%20ui/common/style/boldtext.dart';
+import 'package:balance_cbs/views/new%20ui/form/leftside.dart';
+import 'package:balance_cbs/views/new%20ui/form/rightside.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -208,154 +211,139 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
 
       if (mounted) {
         showDialog(
-            context: context,
-            barrierDismissible: false,
-            useSafeArea: true,
-            builder: (context) => AlertDialog(
-                  title: const Text(
-                    "Would you like to print the receipt?",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                'Would you like to print the receipt?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "${widget.account.first['ac_name']}",
+                    // style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Amount: '),
+                      SizedBox(width: 8),
+                      Text('$totalInputAmount'),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Amount Added',
+                    // style: TextStyle(fontSize: 20),
+                  ),
+                  Text(
+                    'Successfully',
+                    // style: TextStyle(fontSize: 20),
+                  ),
+                  Image.asset(
+                    'assets/common/finact.png',
+                    height: 100,
+                    width: 130,
+                  ),
+                  Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                    size: 60,
+                  ),
+                ],
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: [
+                ElevatedButton(
+                  onPressed: () async {
+                    List<CollectionAccount> collectionAccounts =
+                        widget.account.asMap().entries.map((account) {
+                      return CollectionAccount(
+                        accountType:
+                            account.value['account_type_name'] ?? 'N/A',
+                        accountNumber: account.value['ac_no'] ?? 'N/A',
+                        amount: double.tryParse(
+                                amountControllers[account.key].text) ??
+                            0.0,
+                        comment: account.value['col_remarks'] ?? '',
+                      );
+                    }).toList();
+
+                    if (collectionAccounts.isEmpty) {
+                      print('No accounts available to print');
+                      return;
+                    }
+
+                    bool printSuccess =
+                        await CollectionReceiptPrinter.printCollectionReceipt(
+                      userName: widget.account.first['ac_name'],
+                      groupName: widget.account.first['center_name'] ?? 'N/A',
+                      collectionDate:
+                          widget.account.first['col_date_time'] is DateTime
+                              ? widget.account.first['col_date_time']
+                              : DateTime.now(),
+                      collectionLocation:
+                          widget.account.first['col_location'] ?? 'N/A',
+                      idNumber: widget.account.first['id_no'] ?? 'N/A',
+                      accounts: collectionAccounts,
+                    );
+                    if (!printSuccess) {
+                      print('Failed to print receipt');
+                    }
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  // child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Color(0xffC2DDFF),
+                    ),
+                    foregroundColor: WidgetStateProperty.all(
+                      Colors.black,
                     ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+                  // ),
+                  // onPressed: () =>
+                  //     Navigator.pop(context),
+                  //   ),
+                  child: Text("Print"),
+                ),
+                // ],
+
+                // // ),
+                //   ),
+                // ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Color(0xffAE0003),
+                    ),
+                    foregroundColor: WidgetStateProperty.all(
+                      Colors.white,
+                    ),
                   ),
-                  content: SizedBox(
-                      width: double.maxFinite,
-                      height: 400,
-                      child: Center(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            fit: FlexFit.loose,
-                            child: Image.asset(
-                              CustomTheme.mainLogo,
-                              height: 80,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text("${widget.account.first['ac_name']}"),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "Added Total Amount: $totalInputAmount ",
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const Text(
-                            "Amount Added Sucessfully",
-                            style: TextStyle(fontSize: 17),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Icon(
-                            Icons.done,
-                            color: CustomTheme.appThemeColorPrimary,
-                            size: 35,
-                          ),
-                        ],
-                      ))),
-                  actions: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                            onPressed: () async {
-                              List<CollectionAccount> collectionAccounts =
-                                  widget.account.asMap().entries.map((account) {
-                                return CollectionAccount(
-                                  accountType:
-                                      account.value['account_type_name'] ??
-                                          'N/A',
-                                  accountNumber:
-                                      account.value['ac_no'] ?? 'N/A',
-                                  amount: double.tryParse(
-                                          amountControllers[account.key]
-                                              .text) ??
-                                      0.0,
-                                  comment: account.value['col_remarks'] ?? '',
-                                );
-                              }).toList();
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
 
-                              if (collectionAccounts.isEmpty) {
-                                print('No accounts available to print');
-                                return;
-                              }
-
-                              bool printSuccess = await CollectionReceiptPrinter
-                                  .printCollectionReceipt(
-                                userName: widget.account.first['ac_name'],
-                                groupName:
-                                    widget.account.first['center_name'] ??
-                                        'N/A',
-                                collectionDate: widget.account
-                                        .first['col_date_time'] is DateTime
-                                    ? widget.account.first['col_date_time']
-                                    : DateTime.now(),
-                                collectionLocation:
-                                    widget.account.first['col_location'] ??
-                                        'N/A',
-                                idNumber:
-                                    widget.account.first['id_no'] ?? 'N/A',
-                                accounts: collectionAccounts,
-                              );
-                              if (!printSuccess) {
-                                print('Failed to print receipt');
-                              }
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                                height: 45,
-                                width: 70,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: CustomTheme.appThemeColorPrimary,
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.print_rounded,
-                                      color: Colors.white,
-                                      size: 15,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      "Print",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ))),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                                height: 45,
-                                width: 80,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: CustomTheme.appThemeColorPrimary,
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Text(
-                                  "Cancel",
-                                  style: TextStyle(color: Colors.white),
-                                )))
-                      ],
-                    )
-                  ],
-                ));
+            // );
+          },
+        );
+        // ));
       }
     } catch (e) {
       if (mounted) {
@@ -375,41 +363,101 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        // return AlertDialog(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(15),
+        //   ),
+        //   title: const Text(
+        //     "Would you like to save this change?",
+        //     textAlign: TextAlign.center,
+        //     style: TextStyle(
+        //       fontWeight: FontWeight.bold,
+        //     ),
+        //   ),
+        //   content: Column(
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       Text("Amount: $totalInputAmount",
+        //           style: const TextStyle(fontSize: 16)),
+        //       const SizedBox(height: 8),
+        //       Text("${widget.account.first['ac_name']}",
+        //           style: const TextStyle(fontSize: 16)),
+        //     ],
+        //   ),
+        //   actions: [
+        //     TextButton(
+        //       onPressed: () {
+        //         Navigator.pop(context);
+        //       },
+        //       child: const Text("Cancel", style: TextStyle(color: Colors.red)),
+        //     ),
+        //     ElevatedButton(
+        //       onPressed: () {
+        //         Navigator.pop(context);
+        //         _saveData();
+        //       },
+        //       child: const Text("Confirm",
+        //           style: TextStyle(color: CustomTheme.appThemeColorPrimary)),
+        //     ),
+        //   ],
+        // );
+
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          title: const Text(
-            "Would you like to save this change?",
+          title: Text(
+            'Would you like to save changes?',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Amount: $totalInputAmount",
-                  style: const TextStyle(fontSize: 16)),
-              const SizedBox(height: 8),
-              Text("${widget.account.first['ac_name']}",
-                  style: const TextStyle(fontSize: 16)),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Amount: '),
+                  SizedBox(width: 8),
+                  Text('$totalInputAmount'),
+                ],
+              ),
+              SizedBox(height: 20),
+              Text(
+                "${widget.account.first['ac_name']}",
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Cancel", style: TextStyle(color: Colors.red)),
-            ),
             ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(
+                  Color(0xffAE0003),
+                ),
+                foregroundColor: WidgetStateProperty.all(
+                  Colors.white,
+                ),
+              ),
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+            SizedBox(width: 10),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(
+                  Color(0xffC2DDFF),
+                ),
+                foregroundColor: WidgetStateProperty.all(
+                  Colors.black,
+                ),
+              ),
+              child: Text("Confirm"),
               onPressed: () {
                 Navigator.pop(context);
                 _saveData();
               },
-              child: const Text("Confirm",
-                  style: TextStyle(color: CustomTheme.appThemeColorPrimary)),
             ),
           ],
         );
@@ -420,23 +468,23 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(left: 14.0, top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            decoration: const BoxDecoration(
-                color: Colors.white24,
-                border: Border.symmetric(
-                    horizontal: BorderSide(color: Colors.black12))),
-            child: const Center(
-                child: Text(
-              'User Info',
-              style: TextStyle(
-                  color: CustomTheme.appThemeColorSecondary, fontSize: 15),
-            )),
-          ),
+          // Container(
+          //   margin: const EdgeInsets.only(bottom: 10),
+          //   decoration: const BoxDecoration(
+          //       color: Colors.white24,
+          //       border: Border.symmetric(
+          //           horizontal: BorderSide(color: Colors.black12))),
+          //   child: const Center(
+          //       child: Text(
+          //     'User Info',
+          //     style: TextStyle(
+          //         color: CustomTheme.appThemeColorSecondary, fontSize: 15),
+          //   )),
+          // ),
           _buildCustomerInfo(widget.account),
           _buildAccountsTable(widget.account),
           Container(
@@ -469,62 +517,172 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     );
   }
 
+  // Widget _buildCustomerInfo(List<Map<String, dynamic>> account) {
+  //   final uniqueNames = account.map((e) => e['ac_name']).toSet().toList();
+  //   final joinedNames = uniqueNames.join(', ');
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         joinedNames,
+  //         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+  //       ),
+  //       if (account.first['p_address'] != '')
+  //         Text(
+  //           "Address: ${account.first['p_address'] ?? 'N/A'}",
+  //         ),
+  //       Text(
+  //         "Group Name: ${account.first['center_name'] ?? 'N/A'}",
+  //       ),
+  //       (account.first['contact'] != '/' && account.first['contact'] != null)
+  //           ? InkWell(
+  //               onTap: () {
+  //                 makePhoneCall(account.first['contact']);
+  //               },
+  //               child: Row(
+  //                 children: [
+  //                   Text(
+  //                     "Contact: ${account.first['contact'] ?? 'N/A'}",
+  //                   ),
+  //                   const Icon(
+  //                     Icons.call_outlined,
+  //                     color: CustomTheme.appThemeColorPrimary,
+  //                   ),
+  //                 ],
+  //               ),
+  //             )
+  //           : Container(),
+  //       InkWell(
+  //         onTap: () {
+  //           openGoogleMaps(account.first['add_location']);
+  //         },
+  //         child: const Row(
+  //           children: [
+  //             Text(
+  //               "Geo Address [Click here to redirect]",
+  //               style: TextStyle(color: Colors.blueGrey),
+  //             ),
+  //             Icon(
+  //               Icons.place_outlined,
+  //               color: CustomTheme.appThemeColorPrimary,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //       Text(
+  //         "Id Number: ${account.first['id_no'] ?? 'N/A'}",
+  //       ),
+  //     ],
+  //   );
+  // }
+
   Widget _buildCustomerInfo(List<Map<String, dynamic>> account) {
     final uniqueNames = account.map((e) => e['ac_name']).toSet().toList();
     final joinedNames = uniqueNames.join(', ');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          joinedNames,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        if (account.first['p_address'] != '')
-          Text(
-            "Address: ${account.first['p_address'] ?? 'N/A'}",
-          ),
-        Text(
-          "Group Name: ${account.first['center_name'] ?? 'N/A'}",
-        ),
-        (account.first['contact'] != '/' && account.first['contact'] != null)
-            ? InkWell(
-                onTap: () {
-                  makePhoneCall(account.first['contact']);
-                },
-                child: Row(
-                  children: [
-                    Text(
-                      "Contact: ${account.first['contact'] ?? 'N/A'}",
-                    ),
-                    const Icon(
-                      Icons.call_outlined,
-                      color: CustomTheme.appThemeColorPrimary,
-                    ),
-                  ],
-                ),
-              )
-            : Container(),
-        InkWell(
-          onTap: () {
-            openGoogleMaps(account.first['add_location']);
-          },
-          child: const Row(
+    final firstAccount = account.first;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      width: 359,
+      decoration: BoxDecoration(
+        color: const Color(0xffC2DDFF),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Text(
-                "Geo Address [Click here to redirect]",
-                style: TextStyle(color: Colors.blueGrey),
+              const Text(
+                'Name: ',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Icon(
-                Icons.place_outlined,
-                color: CustomTheme.appThemeColorPrimary,
-              ),
+              Expanded(child: Text(joinedNames)),
             ],
           ),
-        ),
-        Text(
-          "Id Number: ${account.first['id_no'] ?? 'N/A'}",
-        ),
-      ],
+          if (firstAccount['p_address'] != null &&
+              firstAccount['p_address'] != '')
+            Row(
+              children: [
+                const Text(
+                  'Address: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Expanded(child: Text(firstAccount['p_address'])),
+              ],
+            ),
+          Row(
+            children: [
+              const Text(
+                'Group Name: ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Expanded(child: Text(firstAccount['center_name'] ?? 'N/A')),
+            ],
+          ),
+          if (firstAccount['contact'] != '/' && firstAccount['contact'] != null)
+            InkWell(
+              onTap: () {
+                makePhoneCall(firstAccount['contact']);
+              },
+              child: Row(
+                children: [
+                  const Text(
+                    'Contact: ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(child: Text(firstAccount['contact'] ?? 'N/A')),
+                  const Icon(
+                    Icons.call_outlined,
+                    color: CustomTheme.appThemeColorPrimary,
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 5),
+          InkWell(
+            onTap: () {
+              openGoogleMaps(firstAccount['add_location']);
+            },
+            child: const Row(
+              children: [
+                Text(
+                  "Geo Address [Click here to redirect]",
+                  style: TextStyle(color: Colors.blueGrey),
+                ),
+                SizedBox(width: 5),
+                Icon(
+                  Icons.place_outlined,
+                  color: CustomTheme.appThemeColorPrimary,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              const Text(
+                'ID Number: ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(firstAccount['id_no'] ?? 'N/A'),
+            ],
+          ),
+          for (var accounts in account) ...[
+            SizedBox(height: 10),
+            Divider(color: Colors.white),
+            SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: _leftColumnWidget(accounts)),
+                Expanded(child: _rightColumnWidget(accounts)),
+              ],
+            ),
+          ]
+        ],
+      ),
     );
   }
 
@@ -818,6 +976,147 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _leftColumnWidget(Map<String, dynamic> account) {
+    final acc = account;
+    return Column(
+      spacing: 15,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text("AC TYPES", style: TextStyle(fontWeight: FontWeight.bold)),
+        // Text("Alchik Bachat Khata"),
+        Text(acc['account_type_name'].toString()),
+        // acc['account_type_name'].toString().length < 22
+        //     ? SizedBox(height: 6)
+        //     : SizedBox.shrink(),
+
+        Text(
+          "INPUT AMOUNT(NRS)",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        SizedBox(
+          height: 35,
+          child: TextField(
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: isFromInputAmount[0]
+                  ? CustomTheme.appThemeColorSecondary
+                  : Colors.black87,
+              fontSize: 13,
+            ),
+            textAlign: TextAlign.center,
+            controller: amountControllers[0],
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(vertical: 7),
+              filled: true,
+              fillColor: Colors.white,
+              enabled: true,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black, width: 3),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black, width: 3),
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+        ),
+        // SizedBox(height: 1),
+        BoldText('ACCOUNT OPEN DATE'),
+        Text(
+          acc['ac_open_date'].toString(),
+          maxLines: 1,
+          textAlign: TextAlign.center,
+        ),
+        BoldText('BALANCE'),
+        Text(
+          acc['balance'].toString(),
+        ),
+        BoldText('BALANCE DATE'),
+        Text(
+          acc['bal_date']?.split(' ')[0] ?? '',
+        ),
+        BoldText('INST AMOUNT(NRS)'),
+        Text(
+          acc['inst_amt'].toString(),
+        ),
+        BoldText('DUE AMOUNT(NRS)'),
+        Text(
+          acc['due_amt'].toString(),
+        ),
+        BoldText('PB CHECK DATE'),
+        Text(
+          acc['pb_check_date']?.split(' ')[0] ?? '',
+        ),
+      ],
+    );
+  }
+
+  Widget _rightColumnWidget(
+    Map<String, dynamic> account,
+  ) {
+    final acc = account;
+
+    return Column(
+      spacing: 15,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        BoldText('ACCOUNT'),
+        // Text("28"),
+        Text(acc['ac_no']),
+        if (acc['account_type_name'].toString().length > 22)
+          SizedBox(height: 6),
+        BoldText('Total'),
+        Text("1000"),
+        // SizedBox(height: 1),
+        Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: BoldText('MATURITY DATE'),
+        ),
+        Text(
+          acc['maturity_date'] ?? '',
+        ),
+        BoldText('TOTAL'),
+        Text('1000'),
+        Text(''),
+        Text(''),
+        BoldText('TOTAL'),
+        Text('50'),
+        BoldText('TOTAL'),
+        Text('500'),
+        BoldText('REMARKS INPUT'),
+        SizedBox(
+          height: 35,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 1.0),
+            child: TextField(
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+              controller: remarksControllers[0],
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 7),
+                filled: true,
+                fillColor: Colors.white,
+                enabled: true,
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black, width: 3),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black, width: 3),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
