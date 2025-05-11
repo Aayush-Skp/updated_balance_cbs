@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 class CustomerInfoCard extends StatefulWidget {
   final String name;
   final List<Map<String, dynamic>> accounts;
-  final double amt;
 
   const CustomerInfoCard({
     super.key,
     required this.name,
     required this.accounts,
-    required this.amt,
   });
 
   @override
@@ -41,31 +39,9 @@ class _CustomerInfoCardState extends State<CustomerInfoCard> {
     final acc_type =
         widget.accounts.map((e) => e['account_type_name']).toSet().toList();
     final joinedNames = uniqueNames.join(', ');
-
-    final totalInputNumber = widget.accounts.fold<double>(
-      0.0,
-      (sum, acc) {
-        final value = acc['input_number'];
-        return sum + (value is num ? value.toDouble() : 0.0);
-      },
-    );
-    // double sumOfInputAmounts =
-    //     widget.accounts.fold<double>(0.0, (previousSum, account) {
-    //   dynamic rawValue = account['input_amount'];
-    //   num valueToAdd = 0; // Default to 0
-
-    //   if (rawValue == null) {
-    //     valueToAdd = 0;
-    //   } else if (rawValue is num) {
-    //     valueToAdd = rawValue;
-    //   } else {
-    //     print(
-    //         "Warning: 'input_amount' during fold for account $account was '$rawValue' which is not a number. Using 0 for this entry.");
-    //     valueToAdd = 0;
-    //   }
-
-    //   return previousSum + valueToAdd;
-    // });
+    final firstacc = widget.accounts.first;
+    String contact = firstacc['contact']?.toString()?.trim() ?? '';
+    String address = firstacc['p_address']?.toString()?.trim() ?? '';
 
     return Container(
       // margin: const EdgeInsets.only(top: 30),
@@ -81,9 +57,9 @@ class _CustomerInfoCardState extends State<CustomerInfoCard> {
           Padding(
             padding: const EdgeInsets.only(left: 20.0),
             child: Text(
-              joinedNames,
+              'Name: $joinedNames',
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -91,39 +67,62 @@ class _CustomerInfoCardState extends State<CustomerInfoCard> {
           Padding(
             padding: const EdgeInsets.only(left: 20.0, top: 8),
             child: Text(
-              'Amount',
+              "Address: ${address.isNotEmpty ? address : 'N/A'}",
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0, top: 8),
+            child: Text(
+              // "Contact: ${firstacc['contact'].toString().trim() ?? 'N/A'}",
+              "Contact: ${contact.isNotEmpty ? contact : 'N/A'}",
+
+              style: const TextStyle(
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, top: 4),
-            child: Row(
-              children: [
-                Text(
-                  isHidden ? 'Rs. XXX.XX' : 'Rs. $totalInputNumber',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isHidden = !isHidden;
-                    });
-                  },
-                  child: Icon(
-                    isHidden ? Icons.visibility_off : Icons.visibility,
-                    size: 20,
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.only(left: 20.0, top: 8),
+            child: Text(
+              "Id Number: ${firstacc['id_no'] ?? 'N/A'}",
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 20.0, top: 4),
+          //   child: Row(
+          //     children: [
+          //       Text(
+          //         isHidden ? 'Rs. XXX.XX' : 'Rs. $totalInputNumber',
+          //         style: const TextStyle(
+          //           fontSize: 18,
+          //           fontWeight: FontWeight.w900,
+          //         ),
+          //       ),
+          //       const SizedBox(width: 10),
+          //       GestureDetector(
+          //         onTap: () {
+          //           setState(() {
+          //             isHidden = !isHidden;
+          //           });
+          //         },
+          //         child: Icon(
+          //           isHidden ? Icons.visibility_off : Icons.visibility,
+          //           size: 20,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           const SizedBox(height: 10),
           Wrap(
             runSpacing: 10,

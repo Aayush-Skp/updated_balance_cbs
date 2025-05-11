@@ -15,7 +15,9 @@ class InputDataTable extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Commonforall(),
+          Commonforall(
+            showBack: true,
+          ),
           Expanded(
               child: SingleChildScrollView(
                   child: IndividualUserInput(account: account)))

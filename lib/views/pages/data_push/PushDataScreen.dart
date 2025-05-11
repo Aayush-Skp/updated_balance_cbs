@@ -1,7 +1,8 @@
 import 'package:balance_cbs/common/app/theme.dart';
 import 'package:balance_cbs/common/bloc/data_state.dart';
-import 'package:balance_cbs/common/widget/common_page.dart';
 import 'package:balance_cbs/feature/auth/cubit/push_data_cubit.dart';
+import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
+import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,100 +15,132 @@ class PushDataScreen extends StatefulWidget {
 
 class _PushDataScreenState extends State<PushDataScreen> {
   bool _isLoading = false;
-  String? _statusMessage;
 
   @override
   Widget build(BuildContext context) {
-    return CustomCommonPage(
-      child: BlocListener<PushDataCubit, CommonState>(
-        listener: (context, state) async {
-          if (!context.mounted) return;
-          if (state is CommonLoading) {
-            setState(() {
-              _isLoading = true;
-              _statusMessage = null;
-            });
-          }
-          if (state is CommonError) {
-            // print("Some error occured");
-            setState(() {
-              _statusMessage = "error while uploading";
-            });
-          }
-
-          if (state is CommonDataFetchSuccess<dynamic>) {
-            setState(() {
-              _isLoading = false;
-              _statusMessage = "Successfully uploaded! ${state.data[0]}";
-            });
-          }
-        },
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_isLoading) ...[
-                const CircularProgressIndicator(
-                    color: CustomTheme.appThemeColorPrimary),
-                const SizedBox(height: 16),
-                const Text("Uploading...",
-                    style: TextStyle(
-                        color: CustomTheme.appThemeColorPrimary, fontSize: 16)),
-              ] else if (_statusMessage != null) ...[
-                Icon(
-                  _statusMessage?.contains("Successfully uploaded!") ?? false
-                      ? Icons.check_circle
-                      : Icons.error,
-                  color: _statusMessage?.contains("Successfully uploaded!") ??
-                          false
-                      ? CustomTheme.appThemeColorPrimary
-                      : Colors.red,
-                  size: 40,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _statusMessage!,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: _buildSyncButton(
-                      description: "Push Data to the Server",
-                      icon: Icons.upload_rounded,
-                      isProcessing: _isLoading,
-                      onPressed: () {
-                        context.read<PushDataCubit>().pushData();
-                      },
-                      label: "Upload Data"),
-                ),
-              )
-            ],
+    return Scaffold(
+      body: Column(
+        children: [
+          Commonforall(
+            showBack: true,
           ),
+          SizedBox(
+            height: 100,
+          ),
+          BlocListener<PushDataCubit, CommonState>(
+            listener: (context, state) async {
+              if (!context.mounted) return;
+              if (state is CommonLoading) {
+                setState(() {
+                  _isLoading = true;
+                });
+              }
+              if (state is CommonError) {
+                setState(() {
+                  _isLoading = false;
+                });
+                _showErrorDialog(context, "Error while uploading");
+              }
+
+              if (state is CommonDataFetchSuccess<dynamic>) {
+                setState(() {
+                  _isLoading = false;
+                });
+                _showSuccessDialog(context, "${state.data[0]}");
+              }
+            },
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (_isLoading) ...[
+                    const CircularProgressIndicator(
+                        color: CustomTheme.appThemeColorSecondary),
+                    const SizedBox(height: 16),
+                    const Text("Uploading...",
+                        style: TextStyle(
+                            color: CustomTheme.appThemeColorSecondary,
+                            fontSize: 16)),
+                  ],
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: _buildSyncButton(
+                        description: "Push Data to the Server",
+                        image: AssetImage('assets/push/push.png'),
+                        isProcessing: _isLoading,
+                        onPressed: () {
+                          context.read<PushDataCubit>().pushData();
+                        },
+                        label: "Upload Data"),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomBar(),
+    );
+  }
+
+  void _showSuccessDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        contentPadding:
+            EdgeInsets.only(top: 20, bottom: 16, left: 24, right: 24),
+        insetPadding: EdgeInsets.symmetric(horizontal: 40),
+        title: Text(
+          "Successfully Updated!",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            Icon(
+              Icons.check_circle,
+              color: CustomTheme.appThemeColorSecondary,
+              size: 48, // Larger icon
+            ),
+            SizedBox(height: 16),
+          ],
         ),
       ),
     );
   }
 
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.error, color: Colors.red),
+            SizedBox(width: 8),
+            Text("Error"),
+          ],
+        ),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSyncButton({
-    required IconData icon,
+    required ImageProvider image,
     required String label,
     required String description,
     required bool isProcessing,
@@ -115,6 +148,7 @@ class _PushDataScreenState extends State<PushDataScreen> {
     required VoidCallback onPressed,
   }) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
@@ -122,10 +156,10 @@ class _PushDataScreenState extends State<PushDataScreen> {
               ? Colors.orange.shade200
               : CustomTheme.appThemeColorSecondary.withOpacity(0.3),
         ),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(20),
         color: isWarning
             ? Colors.orange.shade50
-            : CustomTheme.appThemeColorSecondary.withOpacity(0.05),
+            : CustomTheme.appThemeColorPrimary,
       ),
       child: InkWell(
         onTap: isProcessing ? null : onPressed,
@@ -157,12 +191,11 @@ class _PushDataScreenState extends State<PushDataScreen> {
                             ),
                           ),
                         )
-                      : Icon(
-                          icon,
-                          color: isWarning
-                              ? Colors.orange.shade700
-                              : CustomTheme.appThemeColorSecondary,
-                          size: 24,
+                      : Image(
+                          image: image,
+                          width: 24,
+                          height: 24,
+                          fit: BoxFit.contain,
                         ),
                 ),
               ),
@@ -191,13 +224,6 @@ class _PushDataScreenState extends State<PushDataScreen> {
                     ),
                   ],
                 ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: isWarning
-                    ? Colors.orange.shade400
-                    : CustomTheme.appThemeColorSecondary.withOpacity(0.5),
               ),
             ],
           ),

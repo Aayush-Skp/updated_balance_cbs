@@ -1,4 +1,3 @@
-
 import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
 import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:balance_cbs/views/new%20ui/common/searchwidget.dart';
@@ -24,11 +23,10 @@ class _ReceiptState extends State<Receipt> {
           Commonforall(),
           SearchWidget(),
           GestureDetector(
-            onTap:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ReceiptInfo()),
-                ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ReceiptInfo()),
+            ),
             child: Container(
               margin: EdgeInsets.only(top: 30),
               padding: EdgeInsets.only(left: 10, top: 25, bottom: 20),
@@ -53,7 +51,6 @@ class _ReceiptState extends State<Receipt> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
-
                     child: Text(
                       'Amount',
                       style: TextStyle(
@@ -62,7 +59,6 @@ class _ReceiptState extends State<Receipt> {
                       ),
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Row(
@@ -99,7 +95,6 @@ class _ReceiptState extends State<Receipt> {
                         height: 20,
                         decoration: BoxDecoration(
                           color: Color(0xffE6F1FF),
-
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -113,7 +108,6 @@ class _ReceiptState extends State<Receipt> {
                         height: 20,
                         decoration: BoxDecoration(
                           color: Color(0xffE6F1FF),
-
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -127,7 +121,6 @@ class _ReceiptState extends State<Receipt> {
                         height: 20,
                         decoration: BoxDecoration(
                           color: Color(0xffE6F1FF),
-
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(

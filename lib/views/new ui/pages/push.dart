@@ -1,4 +1,3 @@
-
 import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
 import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:balance_cbs/views/menu.dart';
@@ -15,7 +14,9 @@ class PushData extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Commonforall(),
+          Commonforall(
+            showBack: true,
+          ),
           SizedBox(height: screenHeight * 0.04),
           GestureDetector(
             onTap: () {

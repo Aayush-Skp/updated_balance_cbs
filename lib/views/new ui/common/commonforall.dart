@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Commonforall extends StatelessWidget {
-  const Commonforall({super.key});
+  final bool showBack;
 
+  const Commonforall({super.key, this.showBack = false});
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -32,6 +33,15 @@ class Commonforall extends StatelessWidget {
             );
           },
         ),
+        if (showBack)
+          Positioned(
+              top: 72,
+              left: 10,
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back_ios))),
       ],
     );
   }

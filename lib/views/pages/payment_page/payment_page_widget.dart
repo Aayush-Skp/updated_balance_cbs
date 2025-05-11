@@ -1,5 +1,7 @@
 import 'package:balance_cbs/common/app/theme.dart';
 import 'package:balance_cbs/common/widget/common_page.dart';
+import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
+import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:flutter/material.dart';
 
 class PaymentPageWidget extends StatefulWidget {
@@ -32,43 +34,54 @@ class _PaymentPageWidgetState extends State<PaymentPageWidget>
 
   @override
   Widget build(BuildContext context) {
-    return CustomCommonPage(
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedBuilder(
-              animation: _rotationAnimation,
-              builder: (context, child) {
-                return Transform.rotate(
-                  angle: _rotationAnimation.value,
-                  child: Image.asset(
-                    CustomTheme.mainLogo,
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.contain,
+    return Scaffold(
+      body: Column(
+        children: [
+          Commonforall(
+            showBack: true,
+          ),
+          Flexible(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedBuilder(
+                    animation: _rotationAnimation,
+                    builder: (context, child) {
+                      return Transform.rotate(
+                        angle: _rotationAnimation.value,
+                        child: Image.asset(
+                          'assets/common/finact.png',
+                          // CustomTheme.mainLogo,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.contain,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              "Feature in Development",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: CustomTheme.appThemeColorPrimary,
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Feature in Development",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: CustomTheme.appThemeColorSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "We're working on something amazing!\nStay tuned.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
-            const Text(
-              "We're working on something amazing!\nStay tuned.",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
+      bottomNavigationBar: BottomBar(),
     );
   }
 }

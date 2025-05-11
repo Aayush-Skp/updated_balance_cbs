@@ -486,27 +486,28 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
           //   )),
           // ),
           _buildCustomerInfo(widget.account),
-          _buildAccountsTable(widget.account),
+          // _buildAccountsTable(widget.account),
           Container(
             margin: const EdgeInsets.only(top: 10, bottom: 14, right: 13),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (widget.goback)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 25,
-                          vertical: 10,
-                        ),
-                        backgroundColor: Colors.white),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 10,
+                      ),
+                      backgroundColor: CustomTheme.appThemeColorPrimary,
+                    ),
                     onPressed: () {
                       // _saveData();
                       _confirmationRequest();
                     },
                     child: const Text(
                       "Update",
-                      style: TextStyle(color: CustomTheme.appThemeColorPrimary),
+                      style: TextStyle(color: CustomTheme.darkerBlack),
                     ),
                   ),
               ],
@@ -612,34 +613,52 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
                 Expanded(child: Text(firstAccount['p_address'])),
               ],
             ),
-          Row(
-            children: [
-              const Text(
-                'Group Name: ',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Expanded(child: Text(firstAccount['center_name'] ?? 'N/A')),
-            ],
-          ),
-          if (firstAccount['contact'] != '/' && firstAccount['contact'] != null)
-            InkWell(
-              onTap: () {
-                makePhoneCall(firstAccount['contact']);
-              },
-              child: Row(
-                children: [
-                  const Text(
-                    'Contact: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+          // Row(
+          //   children: [
+          //     const Text(
+          //       'Group Name: ',
+          //       style: TextStyle(fontWeight: FontWeight.bold),
+          //     ),
+          //     Expanded(child: Text(firstAccount['center_name'] ?? 'N/A')),
+          //   ],
+          // ),
+          // if (firstAccount['contact'] != '/' && firstAccount['contact'] != null)
+          //   InkWell(
+          //     onTap: () {
+          //       makePhoneCall(firstAccount['contact']);
+          //     },
+          //     child: Row(
+          //       children: [
+          //         const Text(
+          //           'Contact: ',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         ),
+          //         Expanded(child: Text(firstAccount['contact'] ?? 'N/A')),
+          //         const Icon(
+          //           Icons.call_outlined,
+          //           color: CustomTheme.appThemeColorPrimary,
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          (firstAccount['contact'] != '/' && firstAccount['contact'] != null)
+              ? InkWell(
+                  onTap: () {
+                    makePhoneCall(firstAccount['contact']);
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        "Contact: ${firstAccount['contact'] ?? 'N/A'}",
+                      ),
+                      const Icon(
+                        Icons.call_outlined,
+                        color: CustomTheme.green,
+                      ),
+                    ],
                   ),
-                  Expanded(child: Text(firstAccount['contact'] ?? 'N/A')),
-                  const Icon(
-                    Icons.call_outlined,
-                    color: CustomTheme.appThemeColorPrimary,
-                  ),
-                ],
-              ),
-            ),
+                )
+              : Container(),
           const SizedBox(height: 5),
           InkWell(
             onTap: () {
@@ -669,18 +688,22 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
               Text(firstAccount['id_no'] ?? 'N/A'),
             ],
           ),
-          for (var accounts in account) ...[
+          // for (var accounts in account) ...[
+          for (int i = 0; i < account.length; i++) ...[
             SizedBox(height: 10),
             Divider(color: Colors.white),
             SizedBox(height: 10),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: _leftColumnWidget(accounts)),
-                Expanded(child: _rightColumnWidget(accounts)),
+                Expanded(child: _leftColumnWidget(account[i], i)),
+                Expanded(child: _rightColumnWidget(account[i], i)),
               ],
             ),
-          ]
+          ],
+          Divider(color: Colors.white),
+          SizedBox(height: 20),
+          grandTotalWidget(account),
         ],
       ),
     );
@@ -979,21 +1002,84 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     );
   }
 
-  Widget _leftColumnWidget(Map<String, dynamic> account) {
-    final acc = account;
+  // Widget _leftColumnWidget(Map<String, dynamic> account) {
+  //   final acc = account;
+  //   return Column(
+  //     children: [
+  //       Column(
+  //         spacing: 15,
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: [
+  //           Text("AC TYPES", style: TextStyle(fontWeight: FontWeight.bold)),
+  //           Text(acc['account_type_name'].toString()),
+  //           Text(
+  //             "INPUT AMOUNT(NRS)",
+  //             style: TextStyle(fontWeight: FontWeight.bold),
+  //           ),
+  //           SizedBox(
+  //             height: 35,
+  //             child: TextField(
+  //               style: TextStyle(
+  //                 fontWeight: FontWeight.bold,
+  //                 color: isFromInputAmount[0]
+  //                     ? CustomTheme.appThemeColorSecondary
+  //                     : Colors.black87,
+  //                 fontSize: 13,
+  //               ),
+  //               textAlign: TextAlign.center,
+  //               controller: amountControllers[0],
+  //               keyboardType: TextInputType.number,
+  //               decoration: InputDecoration(
+  //                 isDense: true,
+  //                 contentPadding: EdgeInsets.symmetric(vertical: 7),
+  //                 filled: true,
+  //                 fillColor: Colors.white,
+  //                 enabled: true,
+  //                 enabledBorder: OutlineInputBorder(
+  //                   borderSide: BorderSide(color: Colors.black, width: 3),
+  //                   borderRadius: BorderRadius.circular(30),
+  //                 ),
+  //                 focusedBorder: OutlineInputBorder(
+  //                   borderSide: BorderSide(color: Colors.black, width: 3),
+  //                   borderRadius: BorderRadius.circular(30),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //           // SizedBox(height: 1),
+  //           BoldText('ACCOUNT OPEN DATE'),
+  //           Text(
+  //             acc['ac_open_date'].toString(),
+  //             maxLines: 1,
+  //             textAlign: TextAlign.center,
+  //           ),
+  //           BoldText('BALANCE'),
+  //           Text(
+  //             acc['balance'].toString(),
+  //           ),
+  //           BoldText('INST AMOUNT(NRS)'),
+  //           Text(
+  //             acc['inst_amt'].toString(),
+  //           ),
+  //           BoldText('DUE AMOUNT(NRS)'),
+  //           Text(
+  //             acc['due_amt'].toString(),
+  //           ),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  Widget _leftColumnWidget(Map<String, dynamic> acc, int index) {
     return Column(
       spacing: 15,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text("AC TYPES", style: TextStyle(fontWeight: FontWeight.bold)),
-        // Text("Alchik Bachat Khata"),
         Text(acc['account_type_name'].toString()),
-        // acc['account_type_name'].toString().length < 22
-        //     ? SizedBox(height: 6)
-        //     : SizedBox.shrink(),
-
         Text(
-          "INPUT AMOUNT(NRS)",
+          "INPUT AMOUNT (NRS)",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         SizedBox(
@@ -1001,14 +1087,67 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
           child: TextField(
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: isFromInputAmount[0]
+              color: isFromInputAmount[index]
                   ? CustomTheme.appThemeColorSecondary
                   : Colors.black87,
               fontSize: 13,
             ),
             textAlign: TextAlign.center,
-            controller: amountControllers[0],
+            controller: amountControllers[index],
             keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(vertical: 7),
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black, width: 3),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black, width: 3),
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+        ),
+        BoldText('ACCOUNT OPEN DATE'),
+        Text(acc['ac_open_date'].toString(), textAlign: TextAlign.center),
+        BoldText('BALANCE'),
+        Text(acc['balance'].toString()),
+        BoldText('INST AMOUNT (NRS)'),
+        Text(acc['inst_amt'].toString()),
+        BoldText('DUE AMOUNT (NRS)'),
+        Text(acc['due_amt'].toString()),
+      ],
+    );
+  }
+
+  Widget _rightColumnWidget(Map<String, dynamic> acc, int index) {
+    return Column(
+      spacing: 15,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        BoldText('ACCOUNT'),
+        Text(acc['ac_no'] ?? ''),
+        if ((acc['account_type_name']?.toString().length ?? 0) > 22)
+          SizedBox(height: 6),
+        BoldText('MATURITY DATE'),
+        Text(acc['maturity_date'] ?? ''),
+        Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: BoldText('BALANCE DATE'),
+        ),
+        Text(acc['bal_date']?.split(' ')[0] ?? ''),
+        BoldText('PB CHECK DATE'),
+        Text(acc['pb_check_date']?.split(' ')[0] ?? ''),
+        BoldText('REMARKS INPUT'),
+        SizedBox(
+          height: 35,
+          child: TextField(
+            style: TextStyle(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+            controller: remarksControllers[index],
             decoration: InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.symmetric(vertical: 7),
@@ -1026,96 +1165,82 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
             ),
           ),
         ),
-        // SizedBox(height: 1),
-        BoldText('ACCOUNT OPEN DATE'),
-        Text(
-          acc['ac_open_date'].toString(),
-          maxLines: 1,
-          textAlign: TextAlign.center,
-        ),
-        BoldText('BALANCE'),
-        Text(
-          acc['balance'].toString(),
-        ),
-        BoldText('BALANCE DATE'),
-        Text(
-          acc['bal_date']?.split(' ')[0] ?? '',
-        ),
-        BoldText('INST AMOUNT(NRS)'),
-        Text(
-          acc['inst_amt'].toString(),
-        ),
-        BoldText('DUE AMOUNT(NRS)'),
-        Text(
-          acc['due_amt'].toString(),
-        ),
-        BoldText('PB CHECK DATE'),
-        Text(
-          acc['pb_check_date']?.split(' ')[0] ?? '',
-        ),
       ],
     );
   }
 
-  Widget _rightColumnWidget(
-    Map<String, dynamic> account,
+  Widget grandTotalWidget(
+    List<Map<String, dynamic>> account,
   ) {
-    final acc = account;
-
-    return Column(
-      spacing: 15,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    setState(() {
+      totalBalance = account.fold<double>(
+        0,
+        (sum, acc) => sum + (acc['balance'] as num).toDouble(),
+      );
+      totalInstAmount = account.fold<double>(
+        0,
+        (sum, acc) => sum + (acc['inst_amt'] as num).toDouble(),
+      );
+      totalDueAmount = account.fold<double>(
+        0,
+        (sum, acc) => sum + (acc['due_amt'] as num).toDouble(),
+      );
+    });
+    // final acc = account;
+    return Row(
       children: [
-        BoldText('ACCOUNT'),
-        // Text("28"),
-        Text(acc['ac_no']),
-        if (acc['account_type_name'].toString().length > 22)
-          SizedBox(height: 6),
-        BoldText('Total'),
-        Text("1000"),
-        // SizedBox(height: 1),
-        Padding(
-          padding: const EdgeInsets.only(top: 15.0),
-          child: BoldText('MATURITY DATE'),
-        ),
-        Text(
-          acc['maturity_date'] ?? '',
-        ),
-        BoldText('TOTAL'),
-        Text('1000'),
-        Text(''),
-        Text(''),
-        BoldText('TOTAL'),
-        Text('50'),
-        BoldText('TOTAL'),
-        Text('500'),
-        BoldText('REMARKS INPUT'),
-        SizedBox(
-          height: 35,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 1.0),
-            child: TextField(
-              style: TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-              controller: remarksControllers[0],
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 7),
-                filled: true,
-                fillColor: Colors.white,
-                enabled: true,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black, width: 3),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black, width: 3),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
+        Column(
+          spacing: 15,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            BoldText(
+              'Total Input Amount',
             ),
-          ),
+            Text(totalInputAmount.toString()),
+            BoldText(
+              'Total Installment Amount',
+            ),
+            Text(totalInstAmount.toString()),
+          ],
         ),
+        Column(
+          spacing: 15,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            BoldText(
+              'Total Balance Amount',
+            ),
+            Text(totalBalance.toString()),
+            BoldText(
+              'Total Due Amount',
+            ),
+            Text(totalDueAmount.toString()),
+          ],
+        )
+        // Expanded(
+        //   child: Container(
+        //     padding: const EdgeInsets.all(8),
+        //     alignment: Alignment.centerRight,
+        //     child: Text(
+        //       'grand total',
+
+        //       // 'Grand Total (Left): ${calculateLeftTotal(accounts)}',
+        //       style: const TextStyle(fontWeight: FontWeight.bold),
+        //       textAlign: TextAlign.center,
+        //     ),
+        //   ),
+        // ),
+        // Expanded(
+        //   child: Container(
+        //     padding: const EdgeInsets.all(8),
+        //     alignment: Alignment.centerRight,
+        //     child: Text(
+        //       'grand total',
+        //       // 'Grand Total (Right): ${calculateRightTotal(accounts)}',
+        //       style: const TextStyle(fontWeight: FontWeight.bold),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

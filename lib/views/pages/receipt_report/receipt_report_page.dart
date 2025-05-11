@@ -229,6 +229,7 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
           Expanded(child: _buildTable()),
         ],
       ),
+      bottomNavigationBar: BottomBar(),
     );
   }
 

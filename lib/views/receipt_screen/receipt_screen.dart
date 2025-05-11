@@ -150,7 +150,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
               );
             },
           ),
-          const SizedBox(height: 5),
+          // const SizedBox(height: 5),
           Expanded(
               child: Padding(
             padding: const EdgeInsets.only(left: 10.0),
@@ -226,18 +226,17 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                 //     :
                 // _buildCustomerInfo(name, accounts),
 
-                CustomerInfoCard(
-                    name: name, accounts: accounts, amt: totalAmount),
+                CustomerInfoCard(name: name, accounts: accounts),
                 // const SizedBox(height: 10),
                 // (_selectedIndex == 1)
                 //     ? Container()
                 //     :
-                AccountTableWidget(
-                  accounts: accounts,
-                  dueAmount: dueAmount,
-                  totalAmount: totalAmount,
-                  horizontalController: _horizontalController,
-                )
+                // AccountTableWidget(
+                //   accounts: accounts,
+                //   dueAmount: dueAmount,
+                //   totalAmount: totalAmount,
+                //   horizontalController: _horizontalController,
+                // )
               ],
             ),
           ),
