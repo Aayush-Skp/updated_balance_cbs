@@ -54,11 +54,11 @@ flutter:
     - assets/receipt/
     - assets/push/
 
-flutter_native_splash:
-  # color: "#ffffff"
-  color: "#23538d" # Background color
-  image: assets/logo/splash.png # Path to your splash image
-  # branding: assets/branding.png # Optional - small logo at bottom
-  android_gravity: center # Image alignment
-  ios_content_mode: scaleAspectFit
-  fullscreen: true
+# flutter_native_splash:
+#   # color: "#ffffff"
+#   color: "#23538d" # Background color
+#   image: assets/logo/splash.png # Path to your splash image
+#   # branding: assets/branding.png # Optional - small logo at bottom
+#   android_gravity: center # Image alignment
+#   ios_content_mode: scaleAspectFit
+#   fullscreen: true
