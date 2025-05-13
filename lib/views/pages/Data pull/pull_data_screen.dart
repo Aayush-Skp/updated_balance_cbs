@@ -6,6 +6,9 @@ import 'package:balance_cbs/feature/auth/cubit/pull_data_cubit.dart';
 import 'package:balance_cbs/feature/auth/models/customer_account_model.dart';
 import 'package:balance_cbs/feature/auth/ui/screens/login_screen.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
+import 'package:balance_cbs/views/menu.dart';
+import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
+import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,92 +57,66 @@ class _PullDataState extends State<PullData> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     List<CustomerAccountModel> customers = [];
 
-    return CustomCommonPage(
-      resizeToAvoidBottomInset: false,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            _buildUserInfoCard(),
-            const SizedBox(height: 10),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 700),
-              child: (isSyncing || isFetching)
-                  ? _buildWarningCard()
-                  : const SizedBox.shrink(),
+    return Scaffold(
+      body: Column(
+        children: [
+          Commonforall(
+            showBack: true,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: screenHeight * 0.04),
+                  _buildUserInfoCard(screenWidth, screenHeight),
+                  const SizedBox(height: 10),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 700),
+                    child: (isSyncing || isFetching)
+                        ? _buildWarningCard()
+                        : const SizedBox.shrink(),
+                  ),
+                  _buildMainContent(customers),
+                ],
+              ),
             ),
-            Expanded(
-              child: _buildMainContent(customers),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUserInfoCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
           ),
         ],
       ),
+      bottomNavigationBar: const BottomBar(),
+    );
+  }
+
+  Widget _buildUserInfoCard(double screenWidth, double screenHeight) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+      width: double.infinity,
+      padding: EdgeInsets.all(screenWidth * 0.04),
+      decoration: BoxDecoration(
+        color: const Color(0xffC2DDFF),
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          // First Row with ID and Logout
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    height: 36,
-                    width: 36,
-                    decoration: BoxDecoration(
-                      color:
-                          CustomTheme.appThemeColorSecondary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.person,
-                      size: 20,
-                      color: CustomTheme.appThemeColorSecondary,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Id",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Color(0xFF333333),
-                        ),
-                      ),
-                      Text(
-                        _currentUsername ?? "Not available",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              Expanded(
+                child: _buildImageWithText(
+                  'assets/profile/id.png',
+                  'ID',
+                  _currentUsername ?? "Not available",
+                  screenWidth,
+                ),
               ),
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   SharedPref.setRememberMe(false);
                   Navigator.pushAndRemoveUntil(
@@ -150,41 +127,145 @@ class _PullDataState extends State<PullData> {
                   );
                 },
                 child: Container(
-                  padding: const EdgeInsets.all(8),
+                  width: screenWidth * 0.30,
+                  height: screenWidth * 0.12,
                   decoration: BoxDecoration(
-                    color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.logout_outlined,
-                        size: 20,
-                        color: Colors.red.shade700,
+                    color: const Color(0xffC2DDFF),
+                    borderRadius: BorderRadius.circular(10),
+                    image: const DecorationImage(
+                      image: AssetImage(
+                        'assets/profile/logout.png',
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "Logout",
-                        style: TextStyle(
-                          color: Colors.red.shade700,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          _buildInfoRow(Icons.link, "URL", _currentUrl ?? "Not available"),
-          const SizedBox(height: 8),
-          _buildInfoRow(Icons.business, "Client Alias",
-              _currentClientAlias ?? "Not available"),
+          SizedBox(height: screenHeight * 0.02),
+          buildImageWithTextRow(
+            'assets/profile/URL.png',
+            'URL',
+            _currentUrl ?? "Not available",
+            screenWidth,
+          ),
+          SizedBox(height: screenHeight * 0.02),
+          buildImageWithTextRow(
+            'assets/profile/client.png',
+            'Client Alias',
+            _currentClientAlias ?? "Not available",
+            screenWidth,
+          ),
         ],
       ),
     );
+
+    // return Container(
+    //   width: double.infinity,
+    //   padding: const EdgeInsets.all(16),
+    //   decoration: BoxDecoration(
+    //     color: Colors.white,
+    //     borderRadius: BorderRadius.circular(12),
+    //     boxShadow: [
+    //       BoxShadow(
+    //         color: Colors.black.withOpacity(0.05),
+    //         blurRadius: 8,
+    //         offset: const Offset(0, 2),
+    //       ),
+    //     ],
+    //   ),
+    //   child: Column(
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       Row(
+    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //         children: [
+    //           Row(
+    //             children: [
+    //               Container(
+    //                 height: 36,
+    //                 width: 36,
+    //                 decoration: BoxDecoration(
+    //                   color:
+    //                       CustomTheme.appThemeColorSecondary.withOpacity(0.1),
+    //                   borderRadius: BorderRadius.circular(8),
+    //                 ),
+    //                 child: const Icon(
+    //                   Icons.person,
+    //                   size: 20,
+    //                   color: CustomTheme.appThemeColorSecondary,
+    //                 ),
+    //               ),
+    //               const SizedBox(width: 12),
+    //               Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: [
+    //                   const Text(
+    //                     "Id",
+    //                     style: TextStyle(
+    //                       fontWeight: FontWeight.bold,
+    //                       fontSize: 16,
+    //                       color: Color(0xFF333333),
+    //                     ),
+    //                   ),
+    //                   Text(
+    //                     _currentUsername ?? "Not available",
+    //                     style: TextStyle(
+    //                       fontSize: 14,
+    //                       color: Colors.grey.shade700,
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ],
+    //           ),
+    //           InkWell(
+    //             onTap: () {
+    //               SharedPref.setRememberMe(false);
+    //               Navigator.pushAndRemoveUntil(
+    //                 context,
+    //                 MaterialPageRoute(
+    //                     builder: (context) => const LoginScreen()),
+    //                 (route) => false,
+    //               );
+    //             },
+    //             child: Container(
+    //               padding: const EdgeInsets.all(8),
+    //               decoration: BoxDecoration(
+    //                 color: Colors.red.shade50,
+    //                 borderRadius: BorderRadius.circular(8),
+    //               ),
+    //               child: Row(
+    //                 children: [
+    //                   Icon(
+    //                     Icons.logout_outlined,
+    //                     size: 20,
+    //                     color: Colors.red.shade700,
+    //                   ),
+    //                   const SizedBox(width: 4),
+    //                   Text(
+    //                     "Logout",
+    //                     style: TextStyle(
+    //                       color: Colors.red.shade700,
+    //                       fontWeight: FontWeight.w500,
+    //                       fontSize: 14,
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //       const SizedBox(height: 16),
+    //       _buildInfoRow(Icons.link, "URL", _currentUrl ?? "Not available"),
+    //       const SizedBox(height: 8),
+    //       _buildInfoRow(Icons.business, "Client Alias",
+    //           _currentClientAlias ?? "Not available"),
+    //     ],
+    //   ),
+    // );
   }
 
   Widget _buildInfoRow(IconData icon, String label, String value) {
@@ -230,6 +311,7 @@ class _PullDataState extends State<PullData> {
 
   Widget _buildWarningCard() {
     return Card(
+      margin: const EdgeInsets.all(16),
       elevation: 0,
       color: Colors.amber.shade50,
       shape: RoundedRectangleBorder(
@@ -270,23 +352,22 @@ class _PullDataState extends State<PullData> {
   }
 
   Widget _buildMainContent(List<CustomerAccountModel> customers) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          // const SizedBox(height: 24),
-          if (isSyncing || isFetching) _buildSyncTimeline(customers),
-          const SizedBox(height: 10),
-          _buildActionButtons(),
-        ],
-      ),
+    return Column(
+      children: [
+        // const SizedBox(height: 24),
+        if (isSyncing || isFetching) _buildSyncTimeline(customers),
+        const SizedBox(height: 10),
+        _buildActionButtons(),
+      ],
     );
   }
 
   Widget _buildSyncTimeline(List<CustomerAccountModel> customers) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: CustomTheme.appThemeColorPrimary,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -397,17 +478,17 @@ class _PullDataState extends State<PullData> {
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
+          // decoration: BoxDecoration(
+          //   // color: Colors.transparent,
+          //   borderRadius: BorderRadius.circular(12),
+          //   boxShadow: [
+          //     BoxShadow(
+          //       color: Colors.black.withOpacity(0.05),
+          //       blurRadius: 8,
+          //       offset: const Offset(0, 2),
+          //     ),
+          //   ],
+          // ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -430,7 +511,7 @@ class _PullDataState extends State<PullData> {
               const SizedBox(height: 24),
               if (!isFetchNew)
                 _buildSyncButton(
-                  icon: Icons.download_rounded,
+                  image: AssetImage('assets/profile/fetch.png'),
                   label: "Fetch New Records Only",
                   description:
                       "Only download new customer records from the server",
@@ -447,11 +528,11 @@ class _PullDataState extends State<PullData> {
               const SizedBox(height: 16),
               if (!isFetchAll)
                 _buildSyncButton(
-                  icon: Icons.sync_rounded,
+                  image: AssetImage('assets/profile/fetchall.png'),
                   label: "Fetch All Data",
                   description: "Replace all existing records with fresh data",
                   isProcessing: isFetching || isSyncing,
-                  isWarning: true,
+                  // isWarning: true,
                   onPressed: _confirmationRequest,
                 ),
             ],
@@ -462,7 +543,7 @@ class _PullDataState extends State<PullData> {
   }
 
   Widget _buildSyncButton({
-    required IconData icon,
+    required ImageProvider image,
     required String label,
     required String description,
     required bool isProcessing,
@@ -472,16 +553,13 @@ class _PullDataState extends State<PullData> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        border: Border.all(
-          color: isWarning
-              ? Colors.orange.shade200
-              : CustomTheme.appThemeColorSecondary.withOpacity(0.3),
-        ),
-        borderRadius: BorderRadius.circular(12),
-        color: isWarning
-            ? Colors.orange.shade50
-            : CustomTheme.appThemeColorSecondary.withOpacity(0.05),
-      ),
+          border: Border.all(color: CustomTheme.appThemeColorPrimary),
+          borderRadius: BorderRadius.circular(20),
+          color: CustomTheme.appThemeColorPrimary
+          // color: isWarning
+          //     ? Colors.orange.shade50
+          //     : CustomTheme.appThemeColorSecondary.withOpacity(0.05),
+          ),
       child: InkWell(
         onTap: isProcessing ? null : onPressed,
         borderRadius: BorderRadius.circular(12),
@@ -493,33 +571,33 @@ class _PullDataState extends State<PullData> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: isWarning
-                      ? Colors.orange.shade100
-                      : CustomTheme.appThemeColorSecondary.withOpacity(0.2),
+                  color: CustomTheme.appThemeColorPrimary,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: isProcessing
-                      ? SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              isWarning
-                                  ? Colors.orange.shade700
-                                  : CustomTheme.appThemeColorSecondary,
+                    child: isProcessing
+                        ? SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                isWarning
+                                    ? Colors.orange.shade700
+                                    : CustomTheme.appThemeColorSecondary,
+                              ),
                             ),
-                          ),
-                        )
-                      : Icon(
-                          icon,
-                          color: isWarning
-                              ? Colors.orange.shade700
-                              : CustomTheme.appThemeColorSecondary,
-                          size: 24,
-                        ),
-                ),
+                          )
+                        : Image(image: image, width: 30, height: 40)
+
+                    // Icon(
+                    //     icon,
+                    //     color: isWarning
+                    //         ? Colors.orange.shade700
+                    //         : CustomTheme.appThemeColorSecondary,
+                    //     size: 24,
+                    //   ),
+                    ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -533,7 +611,7 @@ class _PullDataState extends State<PullData> {
                         fontWeight: FontWeight.w600,
                         color: isWarning
                             ? Colors.orange.shade800
-                            : CustomTheme.appThemeColorSecondary,
+                            : CustomTheme.darkerBlack,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -547,13 +625,13 @@ class _PullDataState extends State<PullData> {
                   ],
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: isWarning
-                    ? Colors.orange.shade400
-                    : CustomTheme.appThemeColorSecondary.withOpacity(0.5),
-              ),
+              // Icon(
+              //   Icons.arrow_forward_ios,
+              //   size: 16,
+              //   color: isWarning
+              //       ? Colors.orange.shade400
+              //       : CustomTheme.appThemeColorSecondary.withOpacity(0.5),
+              // ),
             ],
           ),
         ),
@@ -571,6 +649,8 @@ class _PullDataState extends State<PullData> {
       builder: (BuildContext dialogContext) {
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
+            // backgroundColor: Colors.transparent,
+            // backgroundColor: CustomTheme.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
@@ -588,7 +668,7 @@ class _PullDataState extends State<PullData> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: CustomTheme.appThemeColorPrimary,
+                    color: CustomTheme.darkerBlack,
                   ),
                 ),
               ],
@@ -648,7 +728,7 @@ class _PullDataState extends State<PullData> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: const BorderSide(
-                        color: CustomTheme.appThemeColorPrimary,
+                        color: CustomTheme.darkerBlack,
                         width: 2,
                       ),
                     ),
@@ -699,13 +779,14 @@ class _PullDataState extends State<PullData> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        backgroundColor: CustomTheme.appThemeColorPrimary,
+                        backgroundColor: CustomTheme.appThemeColorSecondary,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        disabledBackgroundColor: Colors.grey.shade300,
+                        disabledBackgroundColor:
+                            CustomTheme.appThemeColorPrimary,
                         disabledForegroundColor: Colors.grey.shade500,
                       ),
                       onPressed: (isFetching || isSyncing || !isConfirmValid)
@@ -805,7 +886,7 @@ class _PullDataState extends State<PullData> {
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: isCompleted || isLoading
-                      ? CustomTheme.appThemeColorSecondary
+                      ? CustomTheme.darkerBlack
                       : Colors.grey.shade800,
                 ),
               ),
@@ -817,6 +898,93 @@ class _PullDataState extends State<PullData> {
                   color: Colors.grey.shade600,
                 ),
               ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImageWithText(
+    String imagePath,
+    String title,
+    String subtitle,
+    double screenWidth,
+  ) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: screenWidth * 0.06,
+          height: screenWidth * 0.14,
+          decoration: BoxDecoration(
+            color: const Color(0xffC2DDFF),
+            borderRadius: BorderRadius.circular(10),
+            image: DecorationImage(
+              image: AssetImage(imagePath),
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+        SizedBox(width: screenWidth * 0.04),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: screenWidth * 0.04,
+                ),
+              ),
+              SizedBox(height: screenWidth * 0.01),
+              Text(subtitle, style: TextStyle(fontSize: screenWidth * 0.03)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Helper method for other rows
+  Widget buildImageWithTextRow(
+    String imagePath,
+    String title,
+    String subtitle,
+    double screenWidth,
+  ) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: screenWidth * 0.06,
+          height: screenWidth * 0.14,
+          decoration: BoxDecoration(
+            color: const Color(0xffC2DDFF),
+            borderRadius: BorderRadius.circular(10),
+            image: DecorationImage(
+              image: AssetImage(imagePath),
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+        SizedBox(width: screenWidth * 0.04),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: screenWidth * 0.04,
+                ),
+              ),
+              SizedBox(height: screenWidth * 0.01),
+              Text(subtitle, style: TextStyle(fontSize: screenWidth * 0.03)),
             ],
           ),
         ),
