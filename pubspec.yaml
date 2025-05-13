@@ -36,7 +36,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-  flutter_native_splash: ^2.4.6
+  # flutter_launcher_icons: ^0.14.3
+  # flutter_native_splash: ^2.4.6
 
 flutter:
   uses-material-design: true
@@ -54,10 +55,19 @@ flutter:
     - assets/receipt/
     - assets/push/
 
+
+# flutter_icons:
+#   android: true
+#   ios: true
+#   image_path: "assets/logo/splash1.png" # your transparent logo
+#   background_color: "#23538D" 
+#   adaptive_icon_background: "#23538D"
+#   adaptive_icon_foreground: "assets/logo/splash1.png"
+
 # flutter_native_splash:
 #   # color: "#ffffff"
 #   color: "#23538d" # Background color
-#   image: assets/logo/splash.png # Path to your splash image
+#   image: assets/logo/splash1.png # Path to your splash image
 #   # branding: assets/branding.png # Optional - small logo at bottom
 #   android_gravity: center # Image alignment
 #   ios_content_mode: scaleAspectFit

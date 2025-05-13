@@ -249,7 +249,7 @@ class _QRScanWidgetState extends State<QRScanWidget>
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Image.asset(
-                      'assets/icons/balance.png',
+                      CustomTheme.mainLogo,
                       height: 60,
                       errorBuilder: (context, error, stackTrace) =>
                           const SizedBox.shrink(),

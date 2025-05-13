@@ -20,8 +20,8 @@ class CustomTheme {
   static const Color tableColorHead = Color(0xFFD7ECED);
   static const Color testAppColor = Color(0xFF010C80);
   static const String footerText = 'Info Brain Solution Pvt. Ltd.';
-  static const String mainLogo = 'assets/icons/group.png';
-  static const String mainLogoWhite = 'assets/icons/balance.png';
+  static const String mainLogo = 'assets/logo/logo.png';
+  static const String mainLogoWhite = 'assets/logo/splash1.png';
   static const double logoSize = 50;
 
 /* For Finasol it solution */

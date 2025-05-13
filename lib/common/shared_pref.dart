@@ -126,7 +126,7 @@ class SharedPref {
   static Future<String> getInvalidResponse() async {
     final instance = await SharedPreferences.getInstance();
     final res = instance.getString(InvalidResponse);
-    return res ?? "Login Error";
+    return res ?? "Url Not set";
   }
 
   static Future<String> getPassword() async {
