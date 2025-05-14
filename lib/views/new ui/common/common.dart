@@ -31,6 +31,14 @@ class CommonImages extends StatelessWidget {
               ],
             ),
           ),
+          Positioned(
+              top: 72,
+              left: 10,
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back_ios))),
         ],
       ),
     );

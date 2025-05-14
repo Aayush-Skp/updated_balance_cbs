@@ -157,6 +157,13 @@ class _PullDataState extends State<PullData> {
             _currentClientAlias ?? "Not available",
             screenWidth,
           ),
+          buildImageWithTextRow(
+            'assets/profile/map.png',
+            'Map',
+            '',
+            // _currentClientAlias ?? "Not available",
+            screenWidth,
+          ),
         ],
       ),
     );
@@ -952,7 +959,7 @@ class _PullDataState extends State<PullData> {
   Widget buildImageWithTextRow(
     String imagePath,
     String title,
-    String subtitle,
+    String? subtitle,
     double screenWidth,
   ) {
     return Row(
@@ -984,7 +991,8 @@ class _PullDataState extends State<PullData> {
                 ),
               ),
               SizedBox(height: screenWidth * 0.01),
-              Text(subtitle, style: TextStyle(fontSize: screenWidth * 0.03)),
+              Text(subtitle ?? '',
+                  style: TextStyle(fontSize: screenWidth * 0.03)),
             ],
           ),
         ),

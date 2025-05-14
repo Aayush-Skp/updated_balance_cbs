@@ -1,4 +1,5 @@
 import 'package:balance_cbs/common/app/theme.dart';
+import 'package:balance_cbs/common/utils/text_utils.dart';
 import 'package:balance_cbs/common/widget/common_page.dart';
 import 'package:balance_cbs/common/widget/customtabletextstyle.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
@@ -633,7 +634,11 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
               'Name: ',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(joinedNames),
+            Text(
+              toSentenceCase(joinedNames).length > 32
+                  ? '${toSentenceCase(joinedNames).substring(0, 32)}...'
+                  : toSentenceCase(joinedNames),
+            )
           ],
         ),
         Row(
@@ -642,16 +647,28 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
               'Address: ',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text("${accounts.first['p_address'] ?? 'N/A'}"),
+            Text(
+                "${accounts.first['p_address']?.toString().trim() == '' ? 'N/A' : accounts.first['p_address']}"),
           ],
         ),
+        // Row(
+        //   children: [
+        //     Text(
+        //       'Group Name: ',
+        //       style: TextStyle(fontWeight: FontWeight.bold),
+        //     ),
+        //     Text(
+        //         "${accounts.first['center_name']?.toString().trim() == '' ? 'N/A' : accounts.first['center_name']}"),
+        //   ],
+        // ),
         Row(
           children: [
             Text(
-              'Group Name: ',
+              'Collected Date: ',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text("${accounts.first['center_name'] ?? 'N/A'}"),
+            Text(
+                "${accounts.first['col_date_time']?.toString().trim() == '' ? 'N/A' : accounts.first['col_date_time']}"),
           ],
         ),
         Wrap(
@@ -661,15 +678,15 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
-              "${accounts.first['col_location'] ?? 'N/A'}",
-            ),
+                "${accounts.first['col_location']?.toString().trim() == '' ? 'N/A' : accounts.first['col_location']}"),
             InkWell(
               onTap: () {
                 openGoogleMaps(accounts.first['col_location'], context);
               },
               child: const Icon(
                 Icons.place,
-                color: CustomTheme.appThemeColorPrimary,
+                color: CustomTheme.appThemeColorSecondary,
+                size: 20,
               ),
             ),
           ],
@@ -726,7 +743,12 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        infoText(acc['account_type_name'] ?? ''),
+                        infoText(toSentenceCase(acc['account_type_name']))
+                                    .toString()
+                                    .trim() ==
+                                ''
+                            ? Text('N/A')
+                            : Text(toSentenceCase(acc['account_type_name'])),
                         if (acc['col_remarks'].toString().trim().isNotEmpty)
                           Text('Remarks: ${acc['col_remarks']}',
                               style: TextStyle(fontSize: 8)),
@@ -751,16 +773,26 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
             TableRow(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: BoldText('Total'),
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Divider(color: Colors.white, height: 1),
                 ),
-                SizedBox(),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: infoText(totalAmount.toString()
-                      // accounts.fold<double>(0, (sum, acc) => sum + (acc['input_amount'] ?? 0)).toStringAsFixed(2),
-                      ),
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Divider(color: Colors.white, height: 1),
                 ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Divider(color: Colors.white, height: 1),
+                ),
+              ],
+            ),
+            TableRow(
+              children: [
+                BoldText('Total'),
+                SizedBox(),
+                infoText(totalAmount.toString()
+                    // accounts.fold<double>(0, (sum, acc) => sum + (acc['input_amount'] ?? 0)).toStringAsFixed(2),
+                    ),
               ],
             ),
           ],

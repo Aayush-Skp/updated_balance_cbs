@@ -225,13 +225,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                               // ),
                               SizedBox(height: 20),
                               Center(
-                                child: Icon(
-                                  Icons.manage_accounts,
-                                  size: 55,
-                                  color: Color(0xff23538D),
-                                ),
-                              ),
-                              Center(
                                 child: InkWell(
                                   onTap: () => Navigator.push(
                                     context,
@@ -239,13 +232,22 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       builder: (context) => Register(),
                                     ),
                                   ),
-                                  child: Text(
-                                    "Settings",
-                                    style: TextStyle(
-                                      color: Color(0xff23538D),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.manage_accounts,
+                                        size: 55,
+                                        color: Color(0xff23538D),
+                                      ),
+                                      Text(
+                                        "Settings",
+                                        style: TextStyle(
+                                          color: Color(0xff23538D),
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

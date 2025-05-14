@@ -20,42 +20,46 @@ class Menu extends StatelessWidget {
   ];
 
   final List<Widget> paths = [
-    // Receipt(),
-    // Container(),
-    // ReceiptReport(),
-    // Container(),
-    // PushData(),
     ReceiptScreen(),
     PaymentPageWidget(),
     ReceiptReportPage(),
-    // ReceiptInfo(),
-    // ReceiptReport(),
     PaymentPageWidget(),
     PushDataScreen(),
     PullData(),
   ];
+
   Menu({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
+    // Set a fixed column count (no dynamic changes)
+    int crossAxisCount =
+        2; // You can change this value as needed (e.g., 2, 3, 4, etc.)
+
     return Scaffold(
-      body: SingleChildScrollView(
+      body: SafeArea(
         child: Column(
           children: [
+            // Commonforall widget
             Commonforall(),
+            SizedBox(height: height * 0.02), // Proportional height for spacing
+
+            // GridView for displaying the images
             Padding(
-              padding: const EdgeInsets.only(top: 45.0),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: imgPaths.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                ),
-                padding: const EdgeInsets.all(14),
-                itemBuilder: (context, index) {
+              padding: EdgeInsets.symmetric(
+                  horizontal: width * 0.04), // Proportional padding
+              child: GridView.count(
+                shrinkWrap: true, // Ensures the grid view is non-scrollable
+                physics: NeverScrollableScrollPhysics(), // Disables scrolling
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing:
+                    width * 0.03, // Proportional spacing between items
+                mainAxisSpacing: height * 0.01, // Proportional vertical spacing
+                childAspectRatio: 1, // Keep square boxes
+                children: List.generate(imgPaths.length, (index) {
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -63,17 +67,30 @@ class Menu extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => paths[index]),
                       );
                     },
-                    child: Image.asset(imgPaths[index], fit: BoxFit.cover),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(imgPaths[index], fit: BoxFit.cover),
+                    ),
                   );
-                },
+                }),
               ),
             ),
+            // ),
+            //       );
+            //     }),
+            //   ),
+            // ),
+
+            // Empty space to push BottomBar to the bottom
+            // Expanded(
+            //   child: SizedBox(),
+            // ),
+
+            // BottomBar widget at the bottom
             BottomBar(),
           ],
         ),
       ),
-      // bottomNavigationBar: BottomBar(),
     );
-    // );
   }
 }

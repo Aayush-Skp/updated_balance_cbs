@@ -1,3 +1,4 @@
+import 'package:balance_cbs/common/utils/text_utils.dart';
 import 'package:flutter/material.dart';
 
 class CustomerInfoCard extends StatefulWidget {
@@ -19,29 +20,17 @@ class _CustomerInfoCardState extends State<CustomerInfoCard> {
   bool isHidden = false;
 
   @override
-  void initState() {
-    super.initState();
-
-    print('The length is ${widget.accounts.length}');
-    if (widget.accounts.isNotEmpty) {
-      print('The data is ${widget.accounts.first}');
-    } else {
-      print('No data found in accounts');
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     // print('The length is $widget.accounts.length');
     // print('The data is $widget.accounts.first');
     final uniqueNames =
         widget.accounts.map((e) => e['ac_name']).toSet().toList();
-    final acc_type =
+    final accType =
         widget.accounts.map((e) => e['account_type_name']).toSet().toList();
     final joinedNames = uniqueNames.join(', ');
     final firstacc = widget.accounts.first;
-    String contact = firstacc['contact']?.toString()?.trim() ?? '';
-    String address = firstacc['p_address']?.toString()?.trim() ?? '';
+    String contact = firstacc['contact']?.toString().trim() ?? '';
+    String address = firstacc['p_address']?.toString().trim() ?? '';
 
     return Container(
       // margin: const EdgeInsets.only(top: 30),
@@ -57,7 +46,7 @@ class _CustomerInfoCardState extends State<CustomerInfoCard> {
           Padding(
             padding: const EdgeInsets.only(left: 20.0),
             child: Text(
-              'Name: $joinedNames',
+              toSentenceCase('Name: $joinedNames'),
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -126,7 +115,7 @@ class _CustomerInfoCardState extends State<CustomerInfoCard> {
           const SizedBox(height: 10),
           Wrap(
             runSpacing: 10,
-            children: acc_type.map((name) {
+            children: accType.map((name) {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 width: 160,

@@ -64,3 +64,6 @@ class _MySplashState extends State<MySplash> {
     );
   }
 }
+
+// TODO: connectivity issue handle 
+// TODO: in receipt change the map redirect
