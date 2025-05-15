@@ -6,6 +6,7 @@ import 'package:balance_cbs/feature/auth/cubit/pull_data_cubit.dart';
 import 'package:balance_cbs/feature/auth/models/customer_account_model.dart';
 import 'package:balance_cbs/feature/auth/ui/screens/login_screen.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
+import 'package:balance_cbs/feature/geoLocation/get_current_location.dart';
 import 'package:balance_cbs/views/menu.dart';
 import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
 import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
@@ -32,6 +33,10 @@ class _PullDataState extends State<PullData> {
   String? _currentUsername;
   String? _currentClientAlias;
 
+  bool _showMap = false;
+  String coordinates = '';
+  bool _isLoadingLocation = false;
+
   @override
   void dispose() {
     _confirmController.dispose();
@@ -41,7 +46,14 @@ class _PullDataState extends State<PullData> {
   @override
   void initState() {
     super.initState();
+    loadMapStatus();
     _loadUserInfo();
+  }
+
+  void loadMapStatus() async {
+    _showMap = await SharedPref.getMapStatus();
+    _fetchLocation(_showMap);
+    // setState(() {});
   }
 
   Future<void> _loadUserInfo() async {
@@ -55,8 +67,50 @@ class _PullDataState extends State<PullData> {
     });
   }
 
+  Future<void> _fetchLocation(bool newValue) async {
+    setState(() {
+      _isLoadingLocation = true;
+    });
+    if (newValue) {
+      try {
+        LocationService locationService = LocationService();
+        final Mycoordinates = await locationService.getCurrentCoordinates();
+
+        setState(() {
+          _showMap = true;
+          SharedPref.setMapStatus(true);
+          coordinates = Mycoordinates;
+          SharedPref.setCoordinates(coordinates);
+        });
+      } catch (e) {
+        // User might have denied location permission or some error occurred
+        setState(() {
+          _showMap = false;
+          SharedPref.setMapStatus(false);
+
+          coordinates = 'Error: $e';
+          SharedPref.removeCoordinates();
+        });
+      }
+    } else {
+      setState(() {
+        _showMap = false;
+        SharedPref.setMapStatus(false);
+
+        SharedPref.removeCoordinates();
+
+        coordinates = '';
+      });
+    }
+    setState(() {
+      _isLoadingLocation = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("bool: $_showMap");
+    print("coordinates: $coordinates");
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     List<CustomerAccountModel> customers = [];
@@ -100,72 +154,82 @@ class _PullDataState extends State<PullData> {
         color: const Color(0xffC2DDFF),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // First Row with ID and Logout
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: _buildImageWithText(
-                  'assets/profile/id.png',
-                  'ID',
-                  _currentUsername ?? "Not available",
-                  screenWidth,
-                ),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        // First Row with ID and Logout
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: _buildImageWithText(
+                'assets/profile/id.png',
+                'ID',
+                _currentUsername ?? "Not available",
+                screenWidth,
               ),
-              GestureDetector(
-                onTap: () {
-                  SharedPref.setRememberMe(false);
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()),
-                    (route) => false,
-                  );
-                },
-                child: Container(
-                  width: screenWidth * 0.30,
-                  height: screenWidth * 0.12,
-                  decoration: BoxDecoration(
-                    color: const Color(0xffC2DDFF),
-                    borderRadius: BorderRadius.circular(10),
-                    image: const DecorationImage(
-                      image: AssetImage(
-                        'assets/profile/logout.png',
-                      ),
-                      fit: BoxFit.contain,
+            ),
+            GestureDetector(
+              onTap: () {
+                SharedPref.setRememberMe(false);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
+                );
+              },
+              child: Container(
+                width: screenWidth * 0.30,
+                height: screenWidth * 0.12,
+                decoration: BoxDecoration(
+                  color: const Color(0xffC2DDFF),
+                  borderRadius: BorderRadius.circular(10),
+                  image: const DecorationImage(
+                    image: AssetImage(
+                      'assets/profile/logout.png',
                     ),
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
-            ],
-          ),
-          SizedBox(height: screenHeight * 0.02),
-          buildImageWithTextRow(
-            'assets/profile/URL.png',
-            'URL',
-            _currentUrl ?? "Not available",
-            screenWidth,
-          ),
-          SizedBox(height: screenHeight * 0.02),
-          buildImageWithTextRow(
-            'assets/profile/client.png',
-            'Client Alias',
-            _currentClientAlias ?? "Not available",
-            screenWidth,
-          ),
-          buildImageWithTextRow(
-            'assets/profile/map.png',
-            'Map',
-            '',
-            // _currentClientAlias ?? "Not available",
-            screenWidth,
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+        SizedBox(height: screenHeight * 0.02),
+        buildImageWithTextRow(
+          'assets/profile/URL.png',
+          'URL',
+          _currentUrl ?? "Not available",
+          screenWidth,
+        ),
+        SizedBox(height: screenHeight * 0.02),
+        buildImageWithTextRow(
+          'assets/profile/client.png',
+          'Client Alias',
+          _currentClientAlias ?? "Not available",
+          screenWidth,
+        ),
+        SizedBox(height: screenHeight * 0.015),
+
+        buildImageWithToggleRow(
+          'assets/profile/map.png',
+          'Map',
+          _showMap,
+          // (newValue) {
+          //   setState(() {
+          //     _showMap = newValue;
+          //   });
+          // },
+          (newValue) async {
+            // setState(() {
+            //   _showMap = newValue;
+            // });
+            await _fetchLocation(
+                newValue); // This will handle the state change internally
+          },
+          screenWidth,
+          context,
+        ),
+      ]),
     );
 
     // return Container(
@@ -999,4 +1063,49 @@ class _PullDataState extends State<PullData> {
       ],
     );
   }
+}
+
+Widget buildImageWithToggleRow(String imagePath, String title, bool value,
+    Function(bool) onToggle, double screenWidth, BuildContext context) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      // Left-side image
+      Image.asset(
+        imagePath,
+        width: screenWidth * 0.06,
+        height: screenWidth * 0.14,
+      ),
+
+      SizedBox(width: screenWidth * 0.04),
+
+      // Texts (Map + Toggle status)
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min, // prevents extra vertical space
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Toggle: ${value ? "ON" : "OFF"}',
+              style: TextStyle(fontSize: screenWidth * 0.03),
+            ),
+          ],
+        ),
+      ),
+
+      // Toggle switch aligned at the end of the row
+      Switch(
+        value: value,
+        onChanged: onToggle,
+        activeColor: CustomTheme.appThemeColorSecondary,
+      ),
+    ],
+  );
 }

@@ -1,4 +1,5 @@
 import 'package:balance_cbs/common/app/theme.dart';
+import 'package:balance_cbs/common/shared_pref.dart';
 import 'package:balance_cbs/common/widget/customtabletextstyle.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
 import 'package:balance_cbs/feature/geoLocation/get_current_location.dart';
@@ -6,6 +7,7 @@ import 'package:balance_cbs/feature/pos_print/printer_util.dart';
 import 'package:balance_cbs/views/new%20ui/common/style/boldtext.dart';
 import 'package:balance_cbs/views/new%20ui/form/leftside.dart';
 import 'package:balance_cbs/views/new%20ui/form/rightside.dart';
+import 'package:balance_cbs/views/pages/Data%20pull/pull_data_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -75,7 +77,8 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
               TextEditingController(text: acc['col_amt']?.toString() ?? ''))
           .toList();
     }
-    _fetchLocation();
+    _loadCoordinates();
+    // _fetchLocation();
     if (widget.passedRemarkscontrollers.isNotEmpty) {
       remarksControllers = widget.passedRemarkscontrollers;
     } else {
@@ -96,11 +99,17 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     _updateTotalInputAmount();
   }
 
-  Future<void> _fetchLocation() async {
-    LocationService locationService = LocationService();
-    final Mycoordinates = await locationService.getCurrentCoordinates();
+  // Future<void> _fetchLocation() async {
+  //   LocationService locationService = LocationService();
+  //   final Mycoordinates = await locationService.getCurrentCoordinates();
+  //   setState(() {
+  //     coordinates = Mycoordinates;
+  //   });
+  // }
+  Future<void> _loadCoordinates() async {
+    final result = await SharedPref.getCoordinates();
     setState(() {
-      coordinates = Mycoordinates;
+      coordinates = result.toString();
     });
   }
 
@@ -467,6 +476,7 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
 
   @override
   Widget build(BuildContext context) {
+    print("coordinates: $coordinates");
     return Padding(
       padding: const EdgeInsets.only(left: 14.0, top: 10),
       child: Column(

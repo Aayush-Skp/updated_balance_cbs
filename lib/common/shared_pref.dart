@@ -25,6 +25,10 @@ class SharedPref {
 
   static const _rememberMe = 'rememberMe';
 
+  static const mapStatusKey = 'mapstatus';
+
+  static const coordinates = "coordinates";
+
   static Future setRememberMe(bool status) async {
     final instance = await SharedPreferences.getInstance();
     await instance.setBool(_rememberMe, status);
@@ -246,5 +250,30 @@ class SharedPref {
   static Future getDeviceUUID() async {
     final instance = await SharedPreferences.getInstance();
     return instance.get(_deviceUUID);
+  }
+
+  static Future<bool> getMapStatus() async {
+    final instance = await SharedPreferences.getInstance();
+    return instance.getBool(mapStatusKey) ?? false; 
+  }
+
+  static Future<void> setMapStatus(bool status) async {
+    final instance = await SharedPreferences.getInstance();
+    await instance.setBool(mapStatusKey, status);
+  }
+
+  static Future setCoordinates(String coordinates) async {
+    final instance = await SharedPreferences.getInstance();
+    await instance.setString(coordinates, coordinates);
+  }
+
+  static Future getCoordinates() async {
+    final instance = await SharedPreferences.getInstance();
+    return instance.get(coordinates);
+  }
+
+  static Future removeCoordinates() async {
+    final instance = await SharedPreferences.getInstance();
+    await instance.remove(coordinates);
   }
 }

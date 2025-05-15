@@ -157,6 +157,8 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Column(
         children: [
@@ -177,7 +179,7 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
                 fit: FlexFit.loose,
                 child: Container(
                   margin: EdgeInsets.only(top: 24),
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.only(top: 20, left: 20, bottom: 20),
                   decoration: BoxDecoration(
                     color: Color(0xffC2DDFF),
                     borderRadius: BorderRadius.circular(20),
@@ -191,20 +193,22 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
                   ),
                   child: Row(
                     children: [
-                      BoldText('AMOUNT', style: TextStyle(fontSize: 16)),
-                      SizedBox(width: 10),
+                      BoldText('AMOUNT',
+                          style: TextStyle(fontSize: width * 0.035)),
+                      SizedBox(width: width * 0.01),
                       Text("Rs.$grandTotalAmount",
                           style: TextStyle(fontSize: 12)),
-                      SizedBox(width: 10),
-                      BoldText('COUNT', style: TextStyle(fontSize: 16)),
-                      SizedBox(width: 10),
+                      SizedBox(width: width * 0.03),
+                      BoldText('COUNT',
+                          style: TextStyle(fontSize: width * 0.035)),
+                      SizedBox(width: width * 0.01),
                       Text("$receiptCount", style: TextStyle(fontSize: 12)),
                     ],
                   ),
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 24, right: 10, left: 3),
+                margin: EdgeInsets.only(top: 24, right: 10, left: width * 0.03),
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Color(0xffC2DDFF),

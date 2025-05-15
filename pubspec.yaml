@@ -25,12 +25,14 @@ dependencies:
   shared_preferences: ^2.2.3
   permission_handler: ^12.0.0+1
   url_launcher: ^6.3.1
-  intl: ^0.20.2
+  # intl: ^0.20.2
   geolocator: ^14.0.0
   uuid: ^4.5.1
   sunmi_printer_plus: ^2.1.2
   number_to_words_nepali: ^1.3.0
   connectivity_plus: ^6.1.4
+  intl: ^0.19.0
+  device_preview: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -54,13 +56,11 @@ flutter:
     - assets/profile/
     - assets/receipt/
     - assets/push/
-
-
 # flutter_icons:
 #   android: true
 #   ios: true
 #   image_path: "assets/logo/splash1.png" # your transparent logo
-#   background_color: "#23538D" 
+#   background_color: "#23538D"
 #   adaptive_icon_background: "#23538D"
 #   adaptive_icon_foreground: "assets/logo/splash1.png"
 

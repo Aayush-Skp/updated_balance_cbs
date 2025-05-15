@@ -1,3 +1,4 @@
+
 import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
 import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:balance_cbs/views/new%20ui/pages/receipt_info.dart';
@@ -35,30 +36,40 @@ class Menu extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
-    // Set a fixed column count (no dynamic changes)
-    int crossAxisCount =
-        2; // You can change this value as needed (e.g., 2, 3, 4, etc.)
+    // Set a fixed column count
+    const int crossAxisCount = 2;
+
+    // Calculate the available height for the grid
+    final commonForAllHeight = height * 0.15; // Estimate Commonforall height
+    final bottomBarHeight = height * 0.2; // Estimate BottomBar height
+    final availableHeight =
+        height - commonForAllHeight - bottomBarHeight - (height * 0.03);
+
+    // Calculate item dimensions
+    final itemWidth =
+        (width - (width * 0.08) - (width * 0.03 * (crossAxisCount - 1))) /
+            crossAxisCount;
+    final itemHeight =
+        availableHeight / (imgPaths.length / crossAxisCount).ceil();
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Commonforall widget
-            Commonforall(),
-            SizedBox(height: height * 0.02), // Proportional height for spacing
+      body: Column(
+        children: [
+          Commonforall(),
+          SizedBox(height: height * 0.02),
 
-            // GridView for displaying the images
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: width * 0.04), // Proportional padding
+          // Use Expanded to take all remaining space
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: width * 0.04),
               child: GridView.count(
-                shrinkWrap: true, // Ensures the grid view is non-scrollable
-                physics: NeverScrollableScrollPhysics(), // Disables scrolling
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: crossAxisCount,
-                crossAxisSpacing:
-                    width * 0.03, // Proportional spacing between items
-                mainAxisSpacing: height * 0.01, // Proportional vertical spacing
-                childAspectRatio: 1, // Keep square boxes
+                crossAxisSpacing: width * 0.03,
+                mainAxisSpacing: height * 0.01,
+                childAspectRatio:
+                    itemWidth / itemHeight, // Dynamic aspect ratio
                 children: List.generate(imgPaths.length, (index) {
                   return GestureDetector(
                     onTap: () {
@@ -67,30 +78,24 @@ class Menu extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => paths[index]),
                       );
                     },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(imgPaths[index], fit: BoxFit.cover),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          image: AssetImage(imgPaths[index]),
+                          fit: BoxFit
+                              .contain, // Changed to contain to ensure full image visibility
+                        ),
+                      ),
                     ),
                   );
                 }),
               ),
             ),
-            // ),
-            //       );
-            //     }),
-            //   ),
-            // ),
-
-            // Empty space to push BottomBar to the bottom
-            // Expanded(
-            //   child: SizedBox(),
-            // ),
-
-            // BottomBar widget at the bottom
-            BottomBar(),
-          ],
-        ),
+          ),
+        ],
       ),
+      bottomNavigationBar: BottomBar(),
     );
   }
 }
