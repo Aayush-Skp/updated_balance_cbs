@@ -2,6 +2,7 @@ import 'package:balance_cbs/common/app/theme.dart';
 import 'package:balance_cbs/common/bloc/data_state.dart';
 import 'package:balance_cbs/common/shared_pref.dart';
 import 'package:balance_cbs/common/widget/common_page.dart';
+import 'package:balance_cbs/common/widget/custom_snackbar.dart';
 import 'package:balance_cbs/feature/auth/cubit/pull_data_cubit.dart';
 import 'package:balance_cbs/feature/auth/models/customer_account_model.dart';
 import 'package:balance_cbs/feature/auth/ui/screens/login_screen.dart';
@@ -12,6 +13,8 @@ import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
 import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PullData extends StatefulWidget {
   const PullData({super.key});
@@ -35,6 +38,7 @@ class _PullDataState extends State<PullData> {
 
   bool _showMap = false;
   String coordinates = '';
+  // bool _isLoadingLocation = false;
   bool _isLoadingLocation = false;
 
   @override
@@ -67,27 +71,107 @@ class _PullDataState extends State<PullData> {
     });
   }
 
+  // Future<void> _fetchLocation(bool newValue) async {
+  //   setState(() {
+  //     _isLoadingLocation = true;
+  //   });
+  //   if (newValue) {
+  //     try {
+  //       LocationService locationService = LocationService();
+  //       final Mycoordinates = await locationService.getCurrentCoordinates();
+  //       String denied = 'Location permissions are permanently denied';
+  //       if (Mycoordinates == denied) {
+  //         setState(() {
+  //           _isLoadingLocation = false;
+  //           _showMap = false;
+  //           SharedPref.setMapStatus(false);
+  //           coordinates = 'Error: $denied';
+  //           SharedPref.removeCoordinates();
+  //         });
+  //         return;
+  //       } else {
+  //         setState(() {
+  //           _showMap = true;
+  //           SharedPref.setMapStatus(true);
+  //           coordinates = Mycoordinates;
+  //           SharedPref.setCoordinates(coordinates);
+  //         });
+  //       }
+  //     } catch (e) {
+  //       // User might have denied location permission or some error occurred
+  //       setState(() {
+  //         _isLoadingLocation = false;
+
+  //         _showMap = false;
+  //         SharedPref.setMapStatus(false);
+
+  //         coordinates = 'Error: $e';
+  //         SharedPref.removeCoordinates();
+  //       });
+  //     }
+  //   } else {
+  //     setState(() {
+  //       _showMap = false;
+  //       SharedPref.setMapStatus(false);
+
+  //       SharedPref.removeCoordinates();
+
+  //       coordinates = '';
+  //     });
+  //   }
+  //   setState(() {
+  //     _isLoadingLocation = false;
+  //   });
+  // }
+
   Future<void> _fetchLocation(bool newValue) async {
+    if (!mounted) return;
     setState(() {
       _isLoadingLocation = true;
     });
+
     if (newValue) {
       try {
         LocationService locationService = LocationService();
-        final Mycoordinates = await locationService.getCurrentCoordinates();
 
+        // Try to get current coordinates with timeout
+        final coordinatesResult = await locationService.getCurrentCoordinates();
+
+        if (coordinatesResult == 'Location permission denied' ||
+            coordinatesResult ==
+                'Location permissions are permanently denied' ||
+            coordinatesResult ==
+                'Error retrieving location: The location service on the device is disabled.') {
+          setState(() {
+            _isLoadingLocation = false;
+            _showMap = false;
+            SharedPref.setMapStatus(false);
+            coordinates = 'Error: $coordinatesResult';
+            SharedPref.removeCoordinates();
+          });
+
+          // Optional: Show dialog to open app settings if permanently denied
+          if (coordinatesResult ==
+              'Location permissions are permanently denied') {
+            await Geolocator.openAppSettings();
+          }
+
+          return;
+        }
+
+        // Success: update state
         setState(() {
           _showMap = true;
           SharedPref.setMapStatus(true);
-          coordinates = Mycoordinates;
+          coordinates = coordinatesResult;
           SharedPref.setCoordinates(coordinates);
         });
       } catch (e) {
-        // User might have denied location permission or some error occurred
+        if (!mounted) return;
         setState(() {
+          _isLoadingLocation = false;
           _showMap = false;
           SharedPref.setMapStatus(false);
-
           coordinates = 'Error: $e';
           SharedPref.removeCoordinates();
         });
@@ -96,9 +180,7 @@ class _PullDataState extends State<PullData> {
       setState(() {
         _showMap = false;
         SharedPref.setMapStatus(false);
-
         SharedPref.removeCoordinates();
-
         coordinates = '';
       });
     }
@@ -210,25 +292,19 @@ class _PullDataState extends State<PullData> {
         ),
         SizedBox(height: screenHeight * 0.015),
 
-        buildImageWithToggleRow(
-          'assets/profile/map.png',
-          'Map',
-          _showMap,
-          // (newValue) {
-          //   setState(() {
-          //     _showMap = newValue;
-          //   });
-          // },
-          (newValue) async {
-            // setState(() {
-            //   _showMap = newValue;
-            // });
-            await _fetchLocation(
-                newValue); // This will handle the state change internally
-          },
-          screenWidth,
-          context,
-        ),
+        buildImageWithToggleRow('assets/profile/map.png', 'Map', _showMap,
+            // (newValue) {
+            //   setState(() {
+            //     _showMap = newValue;
+            //   });
+            // },
+            (newValue) async {
+          // setState(() {
+          //   _showMap = newValue;
+          // });
+          await _fetchLocation(
+              newValue); // This will handle the state change internally
+        }, screenWidth, context, _isLoadingLocation),
       ]),
     );
 
@@ -485,22 +561,31 @@ class _PullDataState extends State<PullData> {
     return BlocConsumer<PullDataCubit, CommonState>(
       listener: (context, state) async {
         if (!context.mounted) return;
-
-        if (state is CommonError) {
+        if (state is CommonNoData) {
           setState(() {
             isFetching = false;
             isSyncing = false;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
+          showCustomSnackBar(
+              context: context,
+              message: "There is Connectivity issue!",
+              textColor: Colors.red);
+        } else if (state is CommonError) {
+          setState(() {
+            isFetching = false;
+            isSyncing = false;
+          });
+          showCustomSnackBar(context: context, message: state.message);
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     content: Text(state.message),
+          //     backgroundColor: Colors.red,
+          //     behavior: SnackBarBehavior.floating,
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(10),
+          //     ),
+          //   ),
+          // );
         } else if (state is CommonDataFetchSuccess<CustomerAccountModel>) {
           setState(() {
             isFetching = false;
@@ -912,13 +997,13 @@ class _PullDataState extends State<PullData> {
             color: isCompleted
                 ? CustomTheme.appThemeColorSecondary
                 : isLoading
-                    ? Theme.of(context).primaryColor
+                    ? Colors.transparent
                     : Colors.grey.shade300,
             border: Border.all(
               color: isCompleted
                   ? CustomTheme.appThemeColorSecondary
                   : isLoading
-                      ? Theme.of(context).primaryColor.withOpacity(0.5)
+                      ? Colors.transparent
                       : Colors.grey.shade200,
               width: 2,
             ),
@@ -929,10 +1014,11 @@ class _PullDataState extends State<PullData> {
                     width: 16,
                     height: 16,
                     child: CircularProgressIndicator(
+                      color: CustomTheme.appThemeColorSecondary,
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.white,
-                      ),
+                      // valueColor: AlwaysStoppedAnimation<Color>(
+                      //   Colors.white,
+                      // ),
                     ),
                   )
                 : isCompleted
@@ -1065,8 +1151,14 @@ class _PullDataState extends State<PullData> {
   }
 }
 
-Widget buildImageWithToggleRow(String imagePath, String title, bool value,
-    Function(bool) onToggle, double screenWidth, BuildContext context) {
+Widget buildImageWithToggleRow(
+    String imagePath,
+    String title,
+    bool value,
+    Function(bool) onToggle,
+    double screenWidth,
+    BuildContext context,
+    bool isLoadingLocation) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
@@ -1101,11 +1193,17 @@ Widget buildImageWithToggleRow(String imagePath, String title, bool value,
       ),
 
       // Toggle switch aligned at the end of the row
-      Switch(
-        value: value,
-        onChanged: onToggle,
-        activeColor: CustomTheme.appThemeColorSecondary,
-      ),
+      isLoadingLocation
+          ? SizedBox(
+              width: 24,
+              height: 24,
+              child: const CircularProgressIndicator(
+                  color: CustomTheme.appThemeColorSecondary))
+          : Switch(
+              value: value,
+              onChanged: onToggle,
+              activeColor: CustomTheme.appThemeColorSecondary,
+            ),
     ],
   );
 }

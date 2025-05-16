@@ -27,7 +27,8 @@ class SharedPref {
 
   static const mapStatusKey = 'mapstatus';
 
-  static const coordinates = "coordinates";
+  // static const coordinates = "coordinates";
+  static const String _coordinatesKey = 'coordinates';
 
   static Future setRememberMe(bool status) async {
     final instance = await SharedPreferences.getInstance();
@@ -254,7 +255,7 @@ class SharedPref {
 
   static Future<bool> getMapStatus() async {
     final instance = await SharedPreferences.getInstance();
-    return instance.getBool(mapStatusKey) ?? false; 
+    return instance.getBool(mapStatusKey) ?? false;
   }
 
   static Future<void> setMapStatus(bool status) async {
@@ -262,18 +263,33 @@ class SharedPref {
     await instance.setBool(mapStatusKey, status);
   }
 
-  static Future setCoordinates(String coordinates) async {
+//   static Future setCoordinates(String coordinates) async {
+  static Future<void> setCoordinates(String coordinates) async {
     final instance = await SharedPreferences.getInstance();
-    await instance.setString(coordinates, coordinates);
+    await instance.setString(_coordinatesKey, coordinates);
   }
 
-  static Future getCoordinates() async {
+  static Future<String?> getCoordinates() async {
     final instance = await SharedPreferences.getInstance();
-    return instance.get(coordinates);
+    return instance.getString(_coordinatesKey);
   }
 
-  static Future removeCoordinates() async {
+  static Future<void> removeCoordinates() async {
     final instance = await SharedPreferences.getInstance();
-    await instance.remove(coordinates);
+    await instance.remove(_coordinatesKey);
   }
 }
+//     final instance = await SharedPreferences.getInstance();
+//     await instance.setString(coordinates, coordinates);
+//   }
+
+//   static Future getCoordinates() async {
+//     final instance = await SharedPreferences.getInstance();
+//     return instance.get(coordinates);
+//   }
+
+//   static Future removeCoordinates() async {
+//     final instance = await SharedPreferences.getInstance();
+//     await instance.remove(coordinates);
+//   }
+// }

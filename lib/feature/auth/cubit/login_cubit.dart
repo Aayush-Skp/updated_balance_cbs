@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:balance_cbs/common/bloc/data_state.dart';
 import 'package:balance_cbs/common/http/response.dart';
@@ -10,9 +11,17 @@ class LoginCubit extends Cubit<CommonState> {
 
   UserRepository userRepository;
 
+
   Future<bool> hasInternetConnection() async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    return connectivityResult != ConnectivityResult.none;
+    try {
+      final connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult == ConnectivityResult.none) return false;
+
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
   }
 
   loginUser({
@@ -22,6 +31,7 @@ class LoginCubit extends Cubit<CommonState> {
     required String actualBaseUrl,
   }) async {
     bool isConnected = await hasInternetConnection();
+
     emit(CommonLoading());
     final res = await userRepository.loginUser(
       username: username,
@@ -34,6 +44,7 @@ class LoginCubit extends Cubit<CommonState> {
     } else if (!isConnected) {
       emit(const CommonNoData());
     } else {
+      print("inside error hello");
       emit(
         CommonError(
           message: res.toString() ?? "Error logging in.",

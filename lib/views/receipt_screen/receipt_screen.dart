@@ -1,11 +1,8 @@
 import 'package:balance_cbs/common/app/theme.dart';
-import 'package:balance_cbs/common/widget/common_page.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
 import 'package:balance_cbs/feature/qr_scan/qr_scan_widget.dart';
 import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
 import 'package:balance_cbs/views/pages/Input_data_table/input_data_table.dart';
-import 'package:balance_cbs/views/pages/Input_data_table/input_table_by_group.dart';
-import 'package:balance_cbs/views/receipt_screen/account_table_widget.dart';
 import 'package:balance_cbs/views/receipt_screen/build_customer_info.dart';
 import 'package:balance_cbs/views/receipt_screen/search_service.dart';
 import 'package:balance_cbs/views/receipt_screen/search_widget.dart';
@@ -165,7 +162,10 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 
   Widget _buildTable() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+          child: CircularProgressIndicator(
+        color: CustomTheme.appThemeColorSecondary,
+      ));
     }
     return ListView.builder(
       controller: _verticalController,
@@ -174,31 +174,12 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
         final name = _filteredAccounts.keys.elementAt(index);
         final accounts = _filteredAccounts[name]!;
 
-        // final totalAmount = accounts.fold<double>(
-        //   0,
-        //   (sum, acc) => sum + (acc['input_amount'] ?? 0 as num).toDouble(),
-        // );
-        final totalAmount = accounts.fold<double>(
-          0,
-          (sum, acc) => sum + ((acc['input_amount'] ?? 0) as num).toDouble(),
-        );
-        final dueAmount = accounts.fold<double>(
-          0,
-          (sum, acc) => sum + (acc['due_amt'] as num).toDouble(),
-        );
-
         return GestureDetector(
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) {
-                return
-                    // (_selectedIndex == 1)
-                    //     ? GroupByGroupName(
-                    //         groudName: name,
-                    //       )
-                    //     :
-                    InputDataTable(
+                return InputDataTable(
                   account: accounts,
                 );
               }),
@@ -221,22 +202,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // (_selectedIndex == 1)
-                //     ? _buildGroupNameList(name, accounts)
-                //     :
-                // _buildCustomerInfo(name, accounts),
-
                 CustomerInfoCard(name: name, accounts: accounts),
-                // const SizedBox(height: 10),
-                // (_selectedIndex == 1)
-                //     ? Container()
-                //     :
-                // AccountTableWidget(
-                //   accounts: accounts,
-                //   dueAmount: dueAmount,
-                //   totalAmount: totalAmount,
-                //   horizontalController: _horizontalController,
-                // )
               ],
             ),
           ),
@@ -244,59 +210,4 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
       },
     );
   }
-
-  // Widget _buildGroupNameList(String name, List<Map<String, dynamic>> accounts) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //         color: CustomTheme.tableColorSecondary,
-  //         borderRadius: BorderRadius.circular(5),
-  //         border: const Border.symmetric(
-  //             vertical: BorderSide.none,
-  //             horizontal:
-  //                 BorderSide(color: CustomTheme.tableColorPrimary, width: 2))),
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(8.0),
-  //       child: Text(
-  //         "Group Name: $name",
-  //         style: const TextStyle(fontWeight: FontWeight.w600),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildCustomerInfo(String name, List<Map<String, dynamic>> accounts) {
-  //   final uniqueNames = accounts.map((e) => e['ac_name']).toSet().toList();
-  //   final joinedNames = uniqueNames.join(', ');
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(
-  //         "Names: $joinedNames",
-  //         style: const TextStyle(fontWeight: FontWeight.bold),
-  //       ),
-  //       Text(
-  //         "Address: ${accounts.first['p_address'] ?? 'N/A'}",
-  //       ),
-  //       Text(
-  //         "Group Name: ${accounts.first['center_name'] ?? 'N/A'}",
-  //       ),
-  //       (accounts.first['contact'] != '/' && accounts.first['contact'] != null)
-  //           ? Row(
-  //               children: [
-  //                 Text(
-  //                   "Contact: ${accounts.first['contact'] ?? 'N/A'}",
-  //                 ),
-  //                 const Icon(
-  //                   Icons.call_outlined,
-  //                   color: CustomTheme.appThemeColorPrimary,
-  //                 ),
-  //               ],
-  //             )
-  //           : Container(),
-  //       Text(
-  //         "Id Number: ${accounts.first['id_no'] ?? 'N/A'}",
-  //       ),
-  //     ],
-  //   );
-  // }
 }

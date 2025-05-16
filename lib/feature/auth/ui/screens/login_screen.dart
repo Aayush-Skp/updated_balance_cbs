@@ -2,7 +2,6 @@ import 'package:balance_cbs/common/shared_pref.dart';
 import 'package:balance_cbs/feature/auth/cubit/login_cubit.dart';
 import 'package:balance_cbs/feature/auth/resources/user_repository.dart';
 import 'package:balance_cbs/feature/auth/ui/widgets/login_widget.dart';
-import 'package:balance_cbs/views/dashboard.dart';
 import 'package:balance_cbs/views/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

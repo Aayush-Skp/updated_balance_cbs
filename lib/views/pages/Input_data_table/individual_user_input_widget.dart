@@ -591,6 +591,8 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     final uniqueNames = account.map((e) => e['ac_name']).toSet().toList();
     final joinedNames = uniqueNames.join(', ');
     final firstAccount = account.first;
+    print('Launching URL: ${firstAccount['add_location']}');
+    print('Launching contact: ${firstAccount['contact']}');
 
     return Container(
       margin: const EdgeInsets.only(top: 20),
@@ -612,83 +614,88 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
               Expanded(child: Text(joinedNames)),
             ],
           ),
+          const SizedBox(height: 5),
           if (firstAccount['p_address'] != null &&
-              firstAccount['p_address'] != '')
-            Row(
+              firstAccount['p_address'] != '') ...[
+            Column(
               children: [
-                const Text(
-                  'Address: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    const Text(
+                      'Address: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(child: Text(firstAccount['p_address'])),
+                  ],
                 ),
-                Expanded(child: Text(firstAccount['p_address'])),
+                const SizedBox(height: 5),
               ],
             ),
-          // Row(
-          //   children: [
-          //     const Text(
-          //       'Group Name: ',
-          //       style: TextStyle(fontWeight: FontWeight.bold),
-          //     ),
-          //     Expanded(child: Text(firstAccount['center_name'] ?? 'N/A')),
-          //   ],
-          // ),
-          // if (firstAccount['contact'] != '/' && firstAccount['contact'] != null)
-          //   InkWell(
-          //     onTap: () {
-          //       makePhoneCall(firstAccount['contact']);
-          //     },
-          //     child: Row(
-          //       children: [
-          //         const Text(
-          //           'Contact: ',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         Expanded(child: Text(firstAccount['contact'] ?? 'N/A')),
-          //         const Icon(
-          //           Icons.call_outlined,
-          //           color: CustomTheme.appThemeColorPrimary,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          (firstAccount['contact'] != '/' && firstAccount['contact'] != null)
-              ? InkWell(
+          ],
+          // ],
+          if (firstAccount['contact'] != '/' &&
+              firstAccount['contact'] != null &&
+              firstAccount['contact'].toString().isNotEmpty)
+            Column(
+              children: [
+                InkWell(
                   onTap: () {
                     makePhoneCall(firstAccount['contact']);
                   },
                   child: Row(
                     children: [
+                      BoldText(
+                        "Contact: ",
+                      ),
                       Text(
-                        "Contact: ${firstAccount['contact'] ?? 'N/A'}",
+                        "${firstAccount['contact'] ?? 'N/A'}",
                       ),
                       const Icon(
                         Icons.call_outlined,
                         color: CustomTheme.green,
+                        size: 20,
                       ),
                     ],
                   ),
-                )
-              : Container(),
-          const SizedBox(height: 5),
-          InkWell(
-            onTap: () {
-              openGoogleMaps(firstAccount['add_location']);
-            },
-            child: const Row(
-              children: [
-                Text(
-                  "Geo Address [Click here to redirect]",
-                  style: TextStyle(color: Colors.blueGrey),
                 ),
-                SizedBox(width: 5),
-                Icon(
-                  Icons.place_outlined,
-                  color: CustomTheme.appThemeColorPrimary,
-                ),
+                SizedBox(height: 5),
               ],
             ),
-          ),
-          const SizedBox(height: 5),
+          // : Container(),
+          if (firstAccount['add_location'] != null &&
+              firstAccount['add_location'] != '')
+            Column(
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      'Location: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        openGoogleMaps(firstAccount['add_location']);
+                      },
+                      child: const Row(
+                        children: [
+                          Text(
+                            "Click here to redirect",
+                            style: TextStyle(color: Colors.blueGrey),
+                          ),
+                          SizedBox(width: 5),
+                          Icon(
+                            Icons.place,
+                            color: CustomTheme.appThemeColorSecondary,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+              ],
+            ),
           Row(
             children: [
               const Text(

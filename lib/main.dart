@@ -149,5 +149,4 @@ class _MySplashState extends State<MySplash> {
 
 
 
-// TODO: connectivity issue handle 
-// TODO: in receipt change the map redirect
+// TODO: connectivity issue handle in pull data

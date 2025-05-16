@@ -240,7 +240,9 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
 
   Widget _buildTable() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+          child: CircularProgressIndicator(
+              color: CustomTheme.appThemeColorSecondary));
     }
     return ListView.builder(
       controller: _verticalController,
@@ -285,7 +287,7 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
                   ],
                 ),
                 Positioned(
-                  right: 0,
+                  right: 10,
                   child: InkWell(
                     onTap: () {
                       showDialog(
@@ -406,8 +408,10 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
                         },
                       );
                     },
-                    child: const Icon(Icons.print,
-                        size: 30, color: Colors.black38),
+                    child: Image.asset('assets/receipt/print.png',
+                        height: 25, width: 25),
+                    // child: const Icon(Icons.print,
+                    //     size: 30, color: Colors.black38),
                   ),
                 ),
               ],
@@ -682,17 +686,22 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
-                "${accounts.first['col_location']?.toString().trim() == '' ? 'N/A' : accounts.first['col_location']}"),
-            InkWell(
-              onTap: () {
-                openGoogleMaps(accounts.first['col_location'], context);
-              },
-              child: const Icon(
-                Icons.place,
-                color: CustomTheme.appThemeColorSecondary,
-                size: 20,
+                "${accounts.first['col_location']?.toString().trim() == '' || accounts.first['col_location'] == 'null' ? 'N/A' : accounts.first['col_location']}"),
+            if (accounts.first['col_location'] != 'null' &&
+                accounts.first['col_location'] !=
+                    'Location permission denied' &&
+                accounts.first['col_location'] !=
+                    'Location permissions are permanently denied')
+              InkWell(
+                onTap: () {
+                  openGoogleMaps(accounts.first['col_location'], context);
+                },
+                child: const Icon(
+                  Icons.place,
+                  color: CustomTheme.appThemeColorSecondary,
+                  size: 20,
+                ),
               ),
-            ),
           ],
         ),
         Row(

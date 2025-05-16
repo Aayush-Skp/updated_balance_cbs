@@ -5,7 +5,6 @@ import 'package:balance_cbs/common/models/users.dart';
 import 'package:balance_cbs/common/shared_pref.dart';
 import 'package:balance_cbs/common/widget/custom_snackbar.dart';
 import 'package:balance_cbs/feature/auth/cubit/login_cubit.dart';
-import 'package:balance_cbs/views/dashboard.dart';
 import 'package:balance_cbs/views/menu.dart';
 import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
 import 'package:balance_cbs/views/new%20ui/pages/register.dart';
@@ -388,6 +387,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           width: 24,
           height: 24,
           child: Checkbox(
+            activeColor: CustomTheme.appThemeColorSecondary,
             value: _rememberMe,
             // activeColor: CustomTheme.appThemeColorPrimary,
             shape: RoundedRectangleBorder(
