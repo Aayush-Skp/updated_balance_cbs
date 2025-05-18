@@ -1,9 +1,7 @@
 import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:balance_cbs/common/bloc/data_state.dart';
 import 'package:balance_cbs/common/http/response.dart';
-// import 'package:balance_cbs/feature/auth/models/customer_account_model.dart';
 import 'package:balance_cbs/feature/auth/resources/user_repository.dart';
 import 'package:balance_cbs/feature/database/database_service.dart';
 import 'package:uuid/uuid.dart';

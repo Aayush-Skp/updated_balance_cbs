@@ -1,7 +1,7 @@
 import 'package:balance_cbs/common/app/navigation_service.dart';
 import 'package:balance_cbs/common/shared_pref.dart';
-import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
-import 'package:balance_cbs/views/new%20ui/common/common.dart';
+import 'package:balance_cbs/common/widget/bottom.dart';
+import 'package:balance_cbs/common/widget/common.dart';
 import 'package:flutter/material.dart';
 import 'package:balance_cbs/feature/auth/ui/widgets/login_widget.dart';
 
@@ -39,13 +39,11 @@ class _RegisterState extends State<Register> {
             key: _formKey,
             child: Column(
               children: [
-                // Use the CommonImages widget
                 Container(
                   margin: const EdgeInsets.only(bottom: 50),
                   child: const CommonImages(),
                 ),
 
-                // Rest of your form remains the same
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
@@ -70,7 +68,6 @@ class _RegisterState extends State<Register> {
                                   TextEditingController(text: result);
                             });
                           },
-                          // prefixIcon: Icons.link,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter the API URL';
@@ -93,7 +90,6 @@ class _RegisterState extends State<Register> {
                                   TextEditingController(text: result);
                             });
                           },
-                          // prefixIcon: Icons.business,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter client alias';
@@ -192,42 +188,6 @@ class _RegisterState extends State<Register> {
             ),
           ),
         ),
-        // Text(
-        //   hintText,
-        //   style: const TextStyle(
-        //     fontSize: 14,
-        //     fontWeight: FontWeight.w500,
-        //     color: Color(0xFF2B2D42),
-        //   ),
-        // ),
-        // const SizedBox(height: 8),
-        // TextFormField(
-        //   controller: controller,
-        //   validator: validator,
-        //   decoration: InputDecoration(
-        //     filled: true,
-        //     fillColor: Colors.white,
-        //     enabledBorder: OutlineInputBorder(
-        //       borderRadius: BorderRadius.circular(10),
-        //       borderSide: BorderSide(
-        //         color: Colors.blue.shade800,
-        //         width: 2,
-        //       ),
-        //     ),
-        //     focusedBorder: OutlineInputBorder(
-        //       borderRadius: BorderRadius.circular(10),
-        //       borderSide: BorderSide(
-        //         color: Colors.blue.shade800,
-        //         width: 2,
-        //       ),
-        //     ),
-        //     hintText: "Enter $hintText",
-        //     suffixIcon: IconButton(
-        //       icon: const Icon(Icons.upload_file, color: Color(0xFF8D99AE)),
-        //       onPressed: onSuffixIconTap,
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }

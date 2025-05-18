@@ -1,7 +1,7 @@
 import 'package:balance_cbs/common/app/theme.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
 import 'package:balance_cbs/feature/qr_scan/qr_scan_widget.dart';
-import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
+import 'package:balance_cbs/common/widget/commonforall.dart';
 import 'package:balance_cbs/views/pages/Input_data_table/input_data_table.dart';
 import 'package:balance_cbs/views/receipt_screen/build_customer_info.dart';
 import 'package:balance_cbs/views/receipt_screen/search_service.dart';
@@ -61,21 +61,6 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     }
   }
 
-  Future<void> _loadAccountsByGroup() async {
-    setState(() => _isLoading = true);
-    try {
-      final accounts = await _db.getAllAccounts();
-      final grouped = _groupAccountsByGroupName(accounts);
-      setState(() {
-        _groupedAccounts = grouped;
-        _filteredAccounts = grouped;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() => _isLoading = false);
-      debugPrint('Error loading accounts: $e');
-    }
-  }
 
   Map<String, List<Map<String, dynamic>>> _groupAccountsByName(
       List<Map<String, dynamic>> accounts) {
@@ -125,19 +110,6 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
             searchController: _searchController,
             showSearchBy: _isShowSearchBy,
             selectedIndex: _selectedIndex,
-            // onFilterPressed: () {
-            //   setState(() {
-            //     _isShowSearchBy = !_isShowSearchBy;
-            //   });
-            // },
-            // onTogglePressed: ((index) {
-            //   setState(() {
-            //     _selectedIndex = index;
-            //     _selectedIndex == 0
-            //         ? _loadAccounts()
-            //         : _loadAccountsByGroup();
-            //   });
-            // }),
             onQRPressed: () {
               Navigator.push(
                 context,
@@ -147,15 +119,12 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
               );
             },
           ),
-          // const SizedBox(height: 5),
           Expanded(
               child: Padding(
             padding: const EdgeInsets.only(left: 10.0),
             child: _buildTable(),
           )),
         ],
-        // ),
-        // ),
       ),
     );
   }
@@ -185,19 +154,12 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
               }),
             ).then((_) {
               setState(() {
-                // if (_selectedIndex == 0) {
                 _loadAccounts();
-                // } else {
-                // _loadAccountsByGroup();
-                // }
               });
             });
           },
           child: Padding(
             padding:
-                // (_selectedIndex == 1)
-                //     ? const EdgeInsets.symmetric(vertical: 3, horizontal: 5)
-                //     :
                 const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

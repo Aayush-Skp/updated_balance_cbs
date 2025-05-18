@@ -1,8 +1,8 @@
 import 'package:balance_cbs/common/app/theme.dart';
 import 'package:balance_cbs/common/bloc/data_state.dart';
 import 'package:balance_cbs/feature/auth/cubit/push_data_cubit.dart';
-import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
-import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
+import 'package:balance_cbs/common/widget/bottom.dart';
+import 'package:balance_cbs/common/widget/commonforall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -121,22 +121,6 @@ class _PushDataScreenState extends State<PushDataScreen> {
     showDialog(
       context: context,
       builder: (context) =>
-          // AlertDialog(
-          //   title: Row(
-          //     children: [
-          //       Icon(Icons.error, color: Colors.red),
-          //       SizedBox(width: 8),
-          //       Text("Error"),
-          //     ],
-          //   ),
-          //   content: Text(message),
-          //   actions: [
-          //     TextButton(
-          //       onPressed: () => Navigator.pop(context),
-          //       child: Text("OK", style: TextStyle(color: Colors.red)),
-          //     ),
-          //   ],
-          // ),
           AlertDialog(
         contentPadding:
             EdgeInsets.only(top: 20, bottom: 16, left: 24, right: 24),
@@ -157,8 +141,6 @@ class _PushDataScreenState extends State<PushDataScreen> {
             SizedBox(height: 16),
             Icon(
               Icons.error, color: Colors.red,
-              // Icons.check_circle,
-              // color: CustomTheme.appThemeColorSecondary,
               size: 48, // Larger icon
             ),
             SizedBox(height: 16),

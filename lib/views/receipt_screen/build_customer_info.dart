@@ -16,13 +16,10 @@ class CustomerInfoCard extends StatefulWidget {
 }
 
 class _CustomerInfoCardState extends State<CustomerInfoCard> {
-  // double sumOfInputAmounts = 0.0; // Or int if your amounts are integers
   bool isHidden = false;
 
   @override
   Widget build(BuildContext context) {
-    // print('The length is $widget.accounts.length');
-    // print('The data is $widget.accounts.first');
     final uniqueNames =
         widget.accounts.map((e) => e['ac_name']).toSet().toList();
     final accType =
@@ -33,7 +30,6 @@ class _CustomerInfoCardState extends State<CustomerInfoCard> {
     String address = firstacc['p_address']?.toString().trim() ?? '';
 
     return Container(
-      // margin: const EdgeInsets.only(top: 30),
       padding: const EdgeInsets.only(left: 10, top: 25, bottom: 20),
       width: 359,
       decoration: BoxDecoration(
@@ -67,7 +63,6 @@ class _CustomerInfoCardState extends State<CustomerInfoCard> {
           Padding(
             padding: const EdgeInsets.only(left: 20.0, top: 8),
             child: Text(
-              // "Contact: ${firstacc['contact'].toString().trim() ?? 'N/A'}",
               "Contact: ${contact.isNotEmpty ? contact : 'N/A'}",
 
               style: const TextStyle(
@@ -86,32 +81,6 @@ class _CustomerInfoCardState extends State<CustomerInfoCard> {
               ),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 20.0, top: 4),
-          //   child: Row(
-          //     children: [
-          //       Text(
-          //         isHidden ? 'Rs. XXX.XX' : 'Rs. $totalInputNumber',
-          //         style: const TextStyle(
-          //           fontSize: 18,
-          //           fontWeight: FontWeight.w900,
-          //         ),
-          //       ),
-          //       const SizedBox(width: 10),
-          //       GestureDetector(
-          //         onTap: () {
-          //           setState(() {
-          //             isHidden = !isHidden;
-          //           });
-          //         },
-          //         child: Icon(
-          //           isHidden ? Icons.visibility_off : Icons.visibility,
-          //           size: 20,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
           const SizedBox(height: 10),
           Wrap(
             runSpacing: 10,

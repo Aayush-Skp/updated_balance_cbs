@@ -1,12 +1,10 @@
 import 'package:balance_cbs/common/app/theme.dart';
 import 'package:balance_cbs/common/utils/text_utils.dart';
-import 'package:balance_cbs/common/widget/common_page.dart';
-import 'package:balance_cbs/common/widget/customtabletextstyle.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
 import 'package:balance_cbs/feature/pos_print/printer_util.dart';
-import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
-import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
-import 'package:balance_cbs/views/new%20ui/common/style/boldtext.dart';
+import 'package:balance_cbs/common/widget/bottom.dart';
+import 'package:balance_cbs/common/widget/commonforall.dart';
+import 'package:balance_cbs/common/utils/style/boldtext.dart';
 import 'package:balance_cbs/views/pages/Input_data_table/open_google_map.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -107,20 +105,6 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
     return filtered;
   }
 
-  // Map<String, List<Map<String, dynamic>>> _groupAccountsByName(
-  //     List<Map<String, dynamic>> accounts) {
-  //   final Map<String, List<Map<String, dynamic>>> grouped = {};
-
-  //   for (var account in accounts) {
-  //     final name = account['col_group_id']?.toString() ?? 'unknown';
-  //     if (!grouped.containsKey(name)) {
-  //       grouped[name] = [];
-  //     }
-  //     grouped[name]!.add(account);
-  //   }
-
-  //   return grouped;
-  // }
   Map<String, List<Map<String, dynamic>>> _groupAccountsByName(
       List<Map<String, dynamic>> accounts) {
     final Map<String, List<Map<String, dynamic>>> grouped = {};
@@ -410,8 +394,6 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
                     },
                     child: Image.asset('assets/receipt/print.png',
                         height: 25, width: 25),
-                    // child: const Icon(Icons.print,
-                    //     size: 30, color: Colors.black38),
                   ),
                 ),
               ],
@@ -422,211 +404,6 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
     );
   }
 
-  // Widget _buildCustomerInfo(String name, List<Map<String, dynamic>> accounts) {
-  //   final uniqueNames = accounts.map((e) => e['ac_name']).toSet().toList();
-  //   final joinedNames = uniqueNames.join(', ');
-
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(
-  //         // "Name: ${name.replaceAll(RegExp(r'\(.*?\)'), '').trim()}",,
-  //         joinedNames,
-  //         style: const TextStyle(fontWeight: FontWeight.bold),
-  //       ),
-  //       Text(
-  //         "Address: ${accounts.first['p_address'] ?? 'N/A'}",
-  //       ),
-  //       Text(
-  //         "Group Name: ${accounts.first['center_name'] ?? 'N/A'}",
-  //       ),
-  //       Text(
-  //         "Collected Date: ${accounts.first['col_date_time'] ?? 'N/A'}",
-  //       ),
-  //       Row(
-  //         children: [
-  //           Text(
-  //             "Collected Location: ${accounts.first['col_location'] ?? 'N/A'}",
-  //           ),
-  //           InkWell(
-  //             onTap: () {
-  //               openGoogleMaps(accounts.first['col_location'], context);
-  //             },
-  //             child: const Icon(
-  //               Icons.place,
-  //               color: CustomTheme.appThemeColorPrimary,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       Text(
-  //         "Id Number: ${accounts.first['id_no'] ?? 'N/A'}",
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildAccountsTable(List<Map<String, dynamic>> accounts,
-  //     double totalAmount, double dueAmount) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(12),
-  //       border: Border.all(color: Colors.grey.shade200),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.grey.shade100,
-  //           blurRadius: 4,
-  //           offset: const Offset(0, 2),
-  //         ),
-  //       ],
-  //     ),
-  //     margin: const EdgeInsets.symmetric(vertical: 8),
-  //     child: ClipRRect(
-  //       borderRadius: BorderRadius.circular(12),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.stretch,
-  //         children: [
-  //           Container(
-  //             color: CustomTheme.tableColorHead,
-  //             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-  //             child: Row(
-  //               children: [
-  //                 Expanded(
-  //                   flex: 3,
-  //                   child: Text(
-  //                     'AC TYPES',
-  //                     style: CustomText.tableheading.copyWith(fontSize: 13),
-  //                   ),
-  //                 ),
-  //                 Expanded(
-  //                   flex: 3,
-  //                   child: Text(
-  //                     'ACCOUNT',
-  //                     style: CustomText.tableheading.copyWith(fontSize: 13),
-  //                   ),
-  //                 ),
-  //                 Expanded(
-  //                   flex: 2,
-  //                   child: Text(
-  //                     'AMOUNT',
-  //                     style: CustomText.tableheading.copyWith(fontSize: 13),
-  //                     textAlign: TextAlign.right,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //           ...accounts.asMap().entries.map((entry) {
-  //             final int index = entry.key;
-  //             final Map<String, dynamic> acc = entry.value;
-
-  //             return Container(
-  //               color: index.isOdd
-  //                   ? CustomTheme.tableColorPrimary
-  //                   : CustomTheme.tableColorSecondary,
-  //               padding:
-  //                   const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Row(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Expanded(
-  //                         flex: 3,
-  //                         child: Text(
-  //                           acc['account_type_name'],
-  //                           style: const TextStyle(
-  //                             fontSize: 14,
-  //                             fontWeight: FontWeight.w500,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       Expanded(
-  //                         flex: 3,
-  //                         child: Text(
-  //                           acc['ac_no'],
-  //                           style: const TextStyle(
-  //                             fontSize: 14,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       Expanded(
-  //                         flex: 2,
-  //                         child: Text(
-  //                           acc['input_amount'].toString(),
-  //                           style: const TextStyle(
-  //                             fontSize: 14,
-  //                             fontWeight: FontWeight.w500,
-  //                           ),
-  //                           textAlign: TextAlign.right,
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   if (acc['col_remarks'].toString().isNotEmpty)
-  //                     Padding(
-  //                       padding: const EdgeInsets.only(top: 6),
-  //                       child: Row(
-  //                         children: [
-  //                           const Text(
-  //                             "Remarks: ",
-  //                             style: TextStyle(
-  //                               fontSize: 12,
-  //                               fontWeight: FontWeight.w500,
-  //                               color: Colors.grey,
-  //                             ),
-  //                           ),
-  //                           Expanded(
-  //                             child: Text(
-  //                               acc['col_remarks'].toString(),
-  //                               style: const TextStyle(
-  //                                 fontSize: 12,
-  //                                 color: Colors.grey,
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                 ],
-  //               ),
-  //             );
-  //           }),
-  //           Container(
-  //             color: CustomTheme.tableColorHead,
-  //             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-  //             child: Row(
-  //               children: [
-  //                 const Expanded(
-  //                   flex: 6,
-  //                   child: Text(
-  //                     'Total',
-  //                     style: TextStyle(
-  //                       fontWeight: FontWeight.bold,
-  //                       fontSize: 14,
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 Expanded(
-  //                   flex: 2,
-  //                   child: Text(
-  //                     totalAmount.toString(),
-  //                     style: const TextStyle(
-  //                       fontWeight: FontWeight.bold,
-  //                       fontSize: 14,
-  //                     ),
-  //                     textAlign: TextAlign.right,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildCustomerInfo(
       String name, List<Map<String, dynamic>> accounts, double totalAmount) {
@@ -659,16 +436,6 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
                 "${accounts.first['p_address']?.toString().trim() == '' ? 'N/A' : accounts.first['p_address']}"),
           ],
         ),
-        // Row(
-        //   children: [
-        //     Text(
-        //       'Group Name: ',
-        //       style: TextStyle(fontWeight: FontWeight.bold),
-        //     ),
-        //     Text(
-        //         "${accounts.first['center_name']?.toString().trim() == '' ? 'N/A' : accounts.first['center_name']}"),
-        //   ],
-        // ),
         Row(
           children: [
             Text(
@@ -804,7 +571,6 @@ class _ReceiptReportPageState extends State<ReceiptReportPage> {
                 BoldText('Total'),
                 SizedBox(),
                 infoText(totalAmount.toString()
-                    // accounts.fold<double>(0, (sum, acc) => sum + (acc['input_amount'] ?? 0)).toStringAsFixed(2),
                     ),
               ],
             ),

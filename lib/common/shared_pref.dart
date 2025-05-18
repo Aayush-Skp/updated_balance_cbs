@@ -279,17 +279,3 @@ class SharedPref {
     await instance.remove(_coordinatesKey);
   }
 }
-//     final instance = await SharedPreferences.getInstance();
-//     await instance.setString(coordinates, coordinates);
-//   }
-
-//   static Future getCoordinates() async {
-//     final instance = await SharedPreferences.getInstance();
-//     return instance.get(coordinates);
-//   }
-
-//   static Future removeCoordinates() async {
-//     final instance = await SharedPreferences.getInstance();
-//     await instance.remove(coordinates);
-//   }
-// }

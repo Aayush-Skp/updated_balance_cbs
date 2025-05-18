@@ -2,12 +2,8 @@ import 'package:balance_cbs/common/app/theme.dart';
 import 'package:balance_cbs/common/shared_pref.dart';
 import 'package:balance_cbs/common/widget/customtabletextstyle.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
-import 'package:balance_cbs/feature/geoLocation/get_current_location.dart';
 import 'package:balance_cbs/feature/pos_print/printer_util.dart';
-import 'package:balance_cbs/views/new%20ui/common/style/boldtext.dart';
-import 'package:balance_cbs/views/new%20ui/form/leftside.dart';
-import 'package:balance_cbs/views/new%20ui/form/rightside.dart';
-import 'package:balance_cbs/views/pages/Data%20pull/pull_data_screen.dart';
+import 'package:balance_cbs/common/utils/style/boldtext.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -99,13 +95,6 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     _updateTotalInputAmount();
   }
 
-  // Future<void> _fetchLocation() async {
-  //   LocationService locationService = LocationService();
-  //   final Mycoordinates = await locationService.getCurrentCoordinates();
-  //   setState(() {
-  //     coordinates = Mycoordinates;
-  //   });
-  // }
   Future<void> _loadCoordinates() async {
     final result = await SharedPref.getCoordinates();
     setState(() {
@@ -251,11 +240,9 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
                   SizedBox(height: 20),
                   Text(
                     'Amount Added',
-                    // style: TextStyle(fontSize: 20),
                   ),
                   Text(
                     'Successfully',
-                    // style: TextStyle(fontSize: 20),
                   ),
                   Image.asset(
                     'assets/common/finact.png',
@@ -319,17 +306,8 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
                       Colors.black,
                     ),
                   ),
-                  // ),
-                  // onPressed: () =>
-                  //     Navigator.pop(context),
-                  //   ),
                   child: Text("Print"),
                 ),
-                // ],
-
-                // // ),
-                //   ),
-                // ),
                 SizedBox(width: 10),
                 ElevatedButton(
                   style: ButtonStyle(
@@ -349,10 +327,8 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
               ],
             );
 
-            // );
           },
         );
-        // ));
       }
     } catch (e) {
       if (mounted) {
@@ -372,44 +348,6 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return AlertDialog(
-        //   shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(15),
-        //   ),
-        //   title: const Text(
-        //     "Would you like to save this change?",
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
-        //   content: Column(
-        //     mainAxisSize: MainAxisSize.min,
-        //     children: [
-        //       Text("Amount: $totalInputAmount",
-        //           style: const TextStyle(fontSize: 16)),
-        //       const SizedBox(height: 8),
-        //       Text("${widget.account.first['ac_name']}",
-        //           style: const TextStyle(fontSize: 16)),
-        //     ],
-        //   ),
-        //   actions: [
-        //     TextButton(
-        //       onPressed: () {
-        //         Navigator.pop(context);
-        //       },
-        //       child: const Text("Cancel", style: TextStyle(color: Colors.red)),
-        //     ),
-        //     ElevatedButton(
-        //       onPressed: () {
-        //         Navigator.pop(context);
-        //         _saveData();
-        //       },
-        //       child: const Text("Confirm",
-        //           style: TextStyle(color: CustomTheme.appThemeColorPrimary)),
-        //     ),
-        //   ],
-        // );
 
         return AlertDialog(
           title: Text(
@@ -482,21 +420,7 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Container(
-          //   margin: const EdgeInsets.only(bottom: 10),
-          //   decoration: const BoxDecoration(
-          //       color: Colors.white24,
-          //       border: Border.symmetric(
-          //           horizontal: BorderSide(color: Colors.black12))),
-          //   child: const Center(
-          //       child: Text(
-          //     'User Info',
-          //     style: TextStyle(
-          //         color: CustomTheme.appThemeColorSecondary, fontSize: 15),
-          //   )),
-          // ),
           _buildCustomerInfo(widget.account),
-          // _buildAccountsTable(widget.account),
           Container(
             margin: const EdgeInsets.only(top: 10, bottom: 14, right: 13),
             child: Row(
@@ -528,64 +452,6 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     );
   }
 
-  // Widget _buildCustomerInfo(List<Map<String, dynamic>> account) {
-  //   final uniqueNames = account.map((e) => e['ac_name']).toSet().toList();
-  //   final joinedNames = uniqueNames.join(', ');
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(
-  //         joinedNames,
-  //         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-  //       ),
-  //       if (account.first['p_address'] != '')
-  //         Text(
-  //           "Address: ${account.first['p_address'] ?? 'N/A'}",
-  //         ),
-  //       Text(
-  //         "Group Name: ${account.first['center_name'] ?? 'N/A'}",
-  //       ),
-  //       (account.first['contact'] != '/' && account.first['contact'] != null)
-  //           ? InkWell(
-  //               onTap: () {
-  //                 makePhoneCall(account.first['contact']);
-  //               },
-  //               child: Row(
-  //                 children: [
-  //                   Text(
-  //                     "Contact: ${account.first['contact'] ?? 'N/A'}",
-  //                   ),
-  //                   const Icon(
-  //                     Icons.call_outlined,
-  //                     color: CustomTheme.appThemeColorPrimary,
-  //                   ),
-  //                 ],
-  //               ),
-  //             )
-  //           : Container(),
-  //       InkWell(
-  //         onTap: () {
-  //           openGoogleMaps(account.first['add_location']);
-  //         },
-  //         child: const Row(
-  //           children: [
-  //             Text(
-  //               "Geo Address [Click here to redirect]",
-  //               style: TextStyle(color: Colors.blueGrey),
-  //             ),
-  //             Icon(
-  //               Icons.place_outlined,
-  //               color: CustomTheme.appThemeColorPrimary,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //       Text(
-  //         "Id Number: ${account.first['id_no'] ?? 'N/A'}",
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildCustomerInfo(List<Map<String, dynamic>> account) {
     final uniqueNames = account.map((e) => e['ac_name']).toSet().toList();
@@ -1019,74 +885,6 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     );
   }
 
-  // Widget _leftColumnWidget(Map<String, dynamic> account) {
-  //   final acc = account;
-  //   return Column(
-  //     children: [
-  //       Column(
-  //         spacing: 15,
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: [
-  //           Text("AC TYPES", style: TextStyle(fontWeight: FontWeight.bold)),
-  //           Text(acc['account_type_name'].toString()),
-  //           Text(
-  //             "INPUT AMOUNT(NRS)",
-  //             style: TextStyle(fontWeight: FontWeight.bold),
-  //           ),
-  //           SizedBox(
-  //             height: 35,
-  //             child: TextField(
-  //               style: TextStyle(
-  //                 fontWeight: FontWeight.bold,
-  //                 color: isFromInputAmount[0]
-  //                     ? CustomTheme.appThemeColorSecondary
-  //                     : Colors.black87,
-  //                 fontSize: 13,
-  //               ),
-  //               textAlign: TextAlign.center,
-  //               controller: amountControllers[0],
-  //               keyboardType: TextInputType.number,
-  //               decoration: InputDecoration(
-  //                 isDense: true,
-  //                 contentPadding: EdgeInsets.symmetric(vertical: 7),
-  //                 filled: true,
-  //                 fillColor: Colors.white,
-  //                 enabled: true,
-  //                 enabledBorder: OutlineInputBorder(
-  //                   borderSide: BorderSide(color: Colors.black, width: 3),
-  //                   borderRadius: BorderRadius.circular(30),
-  //                 ),
-  //                 focusedBorder: OutlineInputBorder(
-  //                   borderSide: BorderSide(color: Colors.black, width: 3),
-  //                   borderRadius: BorderRadius.circular(30),
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //           // SizedBox(height: 1),
-  //           BoldText('ACCOUNT OPEN DATE'),
-  //           Text(
-  //             acc['ac_open_date'].toString(),
-  //             maxLines: 1,
-  //             textAlign: TextAlign.center,
-  //           ),
-  //           BoldText('BALANCE'),
-  //           Text(
-  //             acc['balance'].toString(),
-  //           ),
-  //           BoldText('INST AMOUNT(NRS)'),
-  //           Text(
-  //             acc['inst_amt'].toString(),
-  //           ),
-  //           BoldText('DUE AMOUNT(NRS)'),
-  //           Text(
-  //             acc['due_amt'].toString(),
-  //           ),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _leftColumnWidget(Map<String, dynamic> acc, int index) {
     return Column(

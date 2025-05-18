@@ -1,20 +1,17 @@
 import 'package:balance_cbs/common/app/theme.dart';
 import 'package:balance_cbs/common/bloc/data_state.dart';
 import 'package:balance_cbs/common/shared_pref.dart';
-import 'package:balance_cbs/common/widget/common_page.dart';
 import 'package:balance_cbs/common/widget/custom_snackbar.dart';
 import 'package:balance_cbs/feature/auth/cubit/pull_data_cubit.dart';
 import 'package:balance_cbs/feature/auth/models/customer_account_model.dart';
 import 'package:balance_cbs/feature/auth/ui/screens/login_screen.dart';
 import 'package:balance_cbs/feature/database/cb_db.dart';
 import 'package:balance_cbs/feature/geoLocation/get_current_location.dart';
-import 'package:balance_cbs/views/menu.dart';
-import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
-import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
+import 'package:balance_cbs/common/widget/bottom.dart';
+import 'package:balance_cbs/common/widget/commonforall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class PullData extends StatefulWidget {
   const PullData({super.key});
@@ -70,59 +67,6 @@ class _PullDataState extends State<PullData> {
       _currentClientAlias = clientAlias;
     });
   }
-
-  // Future<void> _fetchLocation(bool newValue) async {
-  //   setState(() {
-  //     _isLoadingLocation = true;
-  //   });
-  //   if (newValue) {
-  //     try {
-  //       LocationService locationService = LocationService();
-  //       final Mycoordinates = await locationService.getCurrentCoordinates();
-  //       String denied = 'Location permissions are permanently denied';
-  //       if (Mycoordinates == denied) {
-  //         setState(() {
-  //           _isLoadingLocation = false;
-  //           _showMap = false;
-  //           SharedPref.setMapStatus(false);
-  //           coordinates = 'Error: $denied';
-  //           SharedPref.removeCoordinates();
-  //         });
-  //         return;
-  //       } else {
-  //         setState(() {
-  //           _showMap = true;
-  //           SharedPref.setMapStatus(true);
-  //           coordinates = Mycoordinates;
-  //           SharedPref.setCoordinates(coordinates);
-  //         });
-  //       }
-  //     } catch (e) {
-  //       // User might have denied location permission or some error occurred
-  //       setState(() {
-  //         _isLoadingLocation = false;
-
-  //         _showMap = false;
-  //         SharedPref.setMapStatus(false);
-
-  //         coordinates = 'Error: $e';
-  //         SharedPref.removeCoordinates();
-  //       });
-  //     }
-  //   } else {
-  //     setState(() {
-  //       _showMap = false;
-  //       SharedPref.setMapStatus(false);
-
-  //       SharedPref.removeCoordinates();
-
-  //       coordinates = '';
-  //     });
-  //   }
-  //   setState(() {
-  //     _isLoadingLocation = false;
-  //   });
-  // }
 
   Future<void> _fetchLocation(bool newValue) async {
     if (!mounted) return;
@@ -293,126 +237,13 @@ class _PullDataState extends State<PullData> {
         SizedBox(height: screenHeight * 0.015),
 
         buildImageWithToggleRow('assets/profile/map.png', 'Map', _showMap,
-            // (newValue) {
-            //   setState(() {
-            //     _showMap = newValue;
-            //   });
-            // },
             (newValue) async {
-          // setState(() {
-          //   _showMap = newValue;
-          // });
           await _fetchLocation(
-              newValue); // This will handle the state change internally
+              newValue);
         }, screenWidth, context, _isLoadingLocation),
       ]),
     );
 
-    // return Container(
-    //   width: double.infinity,
-    //   padding: const EdgeInsets.all(16),
-    //   decoration: BoxDecoration(
-    //     color: Colors.white,
-    //     borderRadius: BorderRadius.circular(12),
-    //     boxShadow: [
-    //       BoxShadow(
-    //         color: Colors.black.withOpacity(0.05),
-    //         blurRadius: 8,
-    //         offset: const Offset(0, 2),
-    //       ),
-    //     ],
-    //   ),
-    //   child: Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: [
-    //       Row(
-    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //         children: [
-    //           Row(
-    //             children: [
-    //               Container(
-    //                 height: 36,
-    //                 width: 36,
-    //                 decoration: BoxDecoration(
-    //                   color:
-    //                       CustomTheme.appThemeColorSecondary.withOpacity(0.1),
-    //                   borderRadius: BorderRadius.circular(8),
-    //                 ),
-    //                 child: const Icon(
-    //                   Icons.person,
-    //                   size: 20,
-    //                   color: CustomTheme.appThemeColorSecondary,
-    //                 ),
-    //               ),
-    //               const SizedBox(width: 12),
-    //               Column(
-    //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //                 children: [
-    //                   const Text(
-    //                     "Id",
-    //                     style: TextStyle(
-    //                       fontWeight: FontWeight.bold,
-    //                       fontSize: 16,
-    //                       color: Color(0xFF333333),
-    //                     ),
-    //                   ),
-    //                   Text(
-    //                     _currentUsername ?? "Not available",
-    //                     style: TextStyle(
-    //                       fontSize: 14,
-    //                       color: Colors.grey.shade700,
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             ],
-    //           ),
-    //           InkWell(
-    //             onTap: () {
-    //               SharedPref.setRememberMe(false);
-    //               Navigator.pushAndRemoveUntil(
-    //                 context,
-    //                 MaterialPageRoute(
-    //                     builder: (context) => const LoginScreen()),
-    //                 (route) => false,
-    //               );
-    //             },
-    //             child: Container(
-    //               padding: const EdgeInsets.all(8),
-    //               decoration: BoxDecoration(
-    //                 color: Colors.red.shade50,
-    //                 borderRadius: BorderRadius.circular(8),
-    //               ),
-    //               child: Row(
-    //                 children: [
-    //                   Icon(
-    //                     Icons.logout_outlined,
-    //                     size: 20,
-    //                     color: Colors.red.shade700,
-    //                   ),
-    //                   const SizedBox(width: 4),
-    //                   Text(
-    //                     "Logout",
-    //                     style: TextStyle(
-    //                       color: Colors.red.shade700,
-    //                       fontWeight: FontWeight.w500,
-    //                       fontSize: 14,
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //       const SizedBox(height: 16),
-    //       _buildInfoRow(Icons.link, "URL", _currentUrl ?? "Not available"),
-    //       const SizedBox(height: 8),
-    //       _buildInfoRow(Icons.business, "Client Alias",
-    //           _currentClientAlias ?? "Not available"),
-    //     ],
-    //   ),
-    // );
   }
 
   Widget _buildInfoRow(IconData icon, String label, String value) {
@@ -576,16 +407,6 @@ class _PullDataState extends State<PullData> {
             isSyncing = false;
           });
           showCustomSnackBar(context: context, message: state.message);
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text(state.message),
-          //     backgroundColor: Colors.red,
-          //     behavior: SnackBarBehavior.floating,
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(10),
-          //     ),
-          //   ),
-          // );
         } else if (state is CommonDataFetchSuccess<CustomerAccountModel>) {
           setState(() {
             isFetching = false;
@@ -634,17 +455,6 @@ class _PullDataState extends State<PullData> {
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.all(20),
-          // decoration: BoxDecoration(
-          //   // color: Colors.transparent,
-          //   borderRadius: BorderRadius.circular(12),
-          //   boxShadow: [
-          //     BoxShadow(
-          //       color: Colors.black.withOpacity(0.05),
-          //       blurRadius: 8,
-          //       offset: const Offset(0, 2),
-          //     ),
-          //   ],
-          // ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -712,9 +522,6 @@ class _PullDataState extends State<PullData> {
           border: Border.all(color: CustomTheme.appThemeColorPrimary),
           borderRadius: BorderRadius.circular(20),
           color: CustomTheme.appThemeColorPrimary
-          // color: isWarning
-          //     ? Colors.orange.shade50
-          //     : CustomTheme.appThemeColorSecondary.withOpacity(0.05),
           ),
       child: InkWell(
         onTap: isProcessing ? null : onPressed,
@@ -746,13 +553,6 @@ class _PullDataState extends State<PullData> {
                           )
                         : Image(image: image, width: 30, height: 40)
 
-                    // Icon(
-                    //     icon,
-                    //     color: isWarning
-                    //         ? Colors.orange.shade700
-                    //         : CustomTheme.appThemeColorSecondary,
-                    //     size: 24,
-                    //   ),
                     ),
               ),
               const SizedBox(width: 16),
@@ -781,13 +581,6 @@ class _PullDataState extends State<PullData> {
                   ],
                 ),
               ),
-              // Icon(
-              //   Icons.arrow_forward_ios,
-              //   size: 16,
-              //   color: isWarning
-              //       ? Colors.orange.shade400
-              //       : CustomTheme.appThemeColorSecondary.withOpacity(0.5),
-              // ),
             ],
           ),
         ),
@@ -914,11 +707,6 @@ class _PullDataState extends State<PullData> {
                         ),
                       ),
                       onPressed: () {
-                        // setState(() {
-                        //   isNewOnly = false;
-                        //   isFetchAll = false;
-                        //   isFetchNew = false;
-                        // });
                         Navigator.pop(dialogContext, false);
                       },
                       child: const Text(
@@ -1016,9 +804,6 @@ class _PullDataState extends State<PullData> {
                     child: CircularProgressIndicator(
                       color: CustomTheme.appThemeColorSecondary,
                       strokeWidth: 2,
-                      // valueColor: AlwaysStoppedAnimation<Color>(
-                      //   Colors.white,
-                      // ),
                     ),
                   )
                 : isCompleted
@@ -1105,7 +890,6 @@ class _PullDataState extends State<PullData> {
     );
   }
 
-  // Helper method for other rows
   Widget buildImageWithTextRow(
     String imagePath,
     String title,
@@ -1192,7 +976,6 @@ Widget buildImageWithToggleRow(
         ),
       ),
 
-      // Toggle switch aligned at the end of the row
       isLoadingLocation
           ? SizedBox(
               width: 24,

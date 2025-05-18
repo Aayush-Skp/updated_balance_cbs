@@ -1,7 +1,6 @@
 import 'package:balance_cbs/common/app/theme.dart';
-import 'package:balance_cbs/common/widget/common_page.dart';
-import 'package:balance_cbs/views/new%20ui/common/bottom.dart';
-import 'package:balance_cbs/views/new%20ui/common/commonforall.dart';
+import 'package:balance_cbs/common/widget/bottom.dart';
+import 'package:balance_cbs/common/widget/commonforall.dart';
 import 'package:flutter/material.dart';
 
 class PaymentPageWidget extends StatefulWidget {
