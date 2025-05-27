@@ -61,7 +61,6 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     }
   }
 
-
   Map<String, List<Map<String, dynamic>>> _groupAccountsByName(
       List<Map<String, dynamic>> accounts) {
     final Map<String, List<Map<String, dynamic>>> grouped = {};
@@ -121,7 +120,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
           ),
           Expanded(
               child: Padding(
-            padding: const EdgeInsets.only(left: 10.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10.0), 
             child: _buildTable(),
           )),
         ],
@@ -159,10 +159,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
             });
           },
           child: Padding(
-            padding:
-                const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CustomerInfoCard(name: name, accounts: accounts),
               ],

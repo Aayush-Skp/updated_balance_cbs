@@ -326,7 +326,6 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
                 ),
               ],
             );
-
           },
         );
       }
@@ -348,7 +347,6 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-
         return AlertDialog(
           title: Text(
             'Would you like to save changes?',
@@ -416,13 +414,13 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
   Widget build(BuildContext context) {
     print("coordinates: $coordinates");
     return Padding(
-      padding: const EdgeInsets.only(left: 14.0, top: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildCustomerInfo(widget.account),
           Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 14, right: 13),
+            margin: const EdgeInsets.only(top: 10, bottom: 14),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -451,7 +449,6 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
       ),
     );
   }
-
 
   Widget _buildCustomerInfo(List<Map<String, dynamic>> account) {
     final uniqueNames = account.map((e) => e['ac_name']).toSet().toList();
@@ -884,7 +881,6 @@ class _IndividualUserInputState extends State<IndividualUserInput> {
       ),
     );
   }
-
 
   Widget _leftColumnWidget(Map<String, dynamic> acc, int index) {
     return Column(
