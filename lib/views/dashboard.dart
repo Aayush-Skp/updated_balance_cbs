@@ -1,7 +1,5 @@
 import 'package:balance_cbs/common/app/theme.dart';
-import 'package:balance_cbs/common/utils/size_utils.dart';
 import 'package:balance_cbs/common/widget/common_page.dart';
-import 'package:balance_cbs/feature/pos_print/printer_widget.dart';
 import 'package:balance_cbs/views/pages/Data%20pull/pull_data_screen.dart';
 import 'package:balance_cbs/views/pages/payment_page/payment_page_widget.dart';
 import 'package:balance_cbs/views/pages/data_push/PushDataScreen.dart';
